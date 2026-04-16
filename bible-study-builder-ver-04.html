@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jesus-Transforms-Lives — Bible Study Template Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f7f2ea;
+    --parchment-dark: #ede6d6;
+    --ink: #2c2416;
+    --ink-soft: #5a4f3c;
+    --ink-muted: #9c8f77;
+    --sage: #5c7a5e;
+    --sage-light: #e8f0e8;
+    --sage-mid: #b8ceb9;
+    --gold: #b8860b;
+    --gold-light: #f5e8c0;
+    --gold-soft: #e8d4a0;
+    --terracotta: #a0522d;
+    --terracotta-light: #f5e8e0;
+    --border: #d5c9b5;
+    --border-dark: #b8a898;
+    --shadow: rgba(44,36,22,0.08);
+    --shadow-md: rgba(44,36,22,0.14);
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--parchment);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── APP SHELL ── */
+  .app { display: flex; flex-direction: column; height: 100vh; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 100;
+  }
+  .topbar-brand {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .topbar-logo {
+    width: 32px; height: 32px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .topbar-name {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    letter-spacing: 0.03em;
+    color: var(--parchment);
+  }
+  .topbar-tagline {
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+  }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .topbar-mode {
+    display: flex;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .mode-btn {
+    font-size: 12px; font-weight: 500;
+    padding: 5px 14px; border-radius: 6px;
+    border: none; cursor: pointer; transition: all 0.18s;
+    color: rgba(247,242,234,0.6);
+    background: transparent;
+  }
+  .mode-btn.active {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .btn-preview {
+    font-size: 12px; font-weight: 500;
+    padding: 7px 16px; border-radius: 8px;
+    border: 1.5px solid var(--gold);
+    cursor: pointer;
+    background: transparent;
+    color: var(--gold);
+    transition: all 0.18s;
+  }
+  .btn-preview:hover { background: var(--gold); color: var(--ink); }
+  .btn-topbar {
+    font-size: 12px; font-weight: 500;
+    padding: 7px 14px; border-radius: 8px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    cursor: pointer; background: transparent;
+    color: rgba(247,242,234,0.75);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+  }
+  .btn-topbar:hover { border-color: rgba(255,255,255,0.5); color: var(--parchment); background: rgba(255,255,255,0.06); }
+  .btn-topbar.btn-save { border-color: var(--sage-mid); color: var(--sage-mid); }
+  .btn-topbar.btn-save:hover { background: var(--sage); border-color: var(--sage); color: #fff; }
+
+  /* ── MAIN LAYOUT ── */
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 240px;
+    background: var(--parchment-dark);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    transition: width 0.3s;
+  }
+  .sidebar.hidden { width: 0; overflow: hidden; }
+
+  .sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .comp-section { padding: 12px 12px 4px; }
+  .comp-section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+
+  .comp-tile {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--parchment);
+    cursor: grab;
+    margin-bottom: 6px;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .comp-tile:hover {
+    border-color: var(--sage);
+    background: var(--sage-light);
+    transform: translateX(2px);
+  }
+  .comp-tile:active { cursor: grabbing; transform: scale(0.97); }
+  .comp-tile-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+    font-family: 'Lora', serif;
+  }
+  .icon-layout { background: var(--gold-light); color: var(--gold); }
+  .icon-content { background: var(--sage-light); color: var(--sage); }
+  .icon-interact { background: var(--terracotta-light); color: var(--terracotta); }
+
+  .comp-tile-info {}
+  .comp-tile-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+  .comp-tile-desc { font-size: 10px; color: var(--ink-muted); margin-top: 1px; }
+
+  /* ── CANVAS ── */
+  .canvas-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: var(--parchment);
+    position: relative;
+  }
+
+  .canvas-inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .canvas-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .canvas-label::after {
+    content: ''; flex: 1;
+    height: 1px; background: var(--border);
+  }
+
+  .drop-zone {
+    min-height: 480px;
+    border: 2px dashed var(--border-dark);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .drop-zone.drag-over {
+    border-color: var(--sage);
+    background: var(--sage-light);
+  }
+  .drop-empty {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px; pointer-events: none;
+    opacity: 0.5;
+  }
+  .drop-empty-cross {
+    font-family: 'Lora', serif;
+    font-size: 40px;
+    color: var(--ink-muted);
+  }
+  .drop-empty-text {
+    font-size: 13px;
+    color: var(--ink-muted);
+    text-align: center;
+    max-width: 200px;
+    line-height: 1.5;
+  }
+
+  /* ── DROP INDICATOR ── */
+  .drop-indicator {
+    height: 3px;
+    background: var(--sage);
+    border-radius: 2px;
+    margin: 4px 0;
+    position: relative;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .drop-indicator::before {
+    content: '';
+    position: absolute;
+    left: -5px; top: -4px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--sage);
+  }
+  .drop-indicator::after {
+    content: '';
+    position: absolute;
+    right: -5px; top: -4px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--sage);
+  }
+
+  /* ── PLACED BLOCKS ── */
+  .block {
+    position: relative;
+    margin-bottom: 10px;
+    border-radius: var(--radius);
+    border: 1.5px solid transparent;
+    transition: border-color 0.15s;
+    cursor: pointer;
+  }
+  .block:hover { border-color: var(--border-dark); }
+  .block.selected { border-color: var(--sage) !important; }
+  .block.dragging-block { opacity: 0.4; }
+
+  .block-toolbar {
+    position: absolute; top: -1px; right: 6px;
+    display: none;
+    background: var(--ink);
+    border-radius: 0 0 8px 8px;
+    padding: 3px 5px;
+    gap: 2px;
+    z-index: 20;
+    align-items: center;
+  }
+  .block:hover .block-toolbar,
+  .block.selected .block-toolbar { display: flex; }
+  .blk-btn {
+    width: 22px; height: 22px; border: none;
+    background: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; border-radius: 4px;
+    color: var(--parchment);
+    transition: background 0.12s;
+  }
+  .blk-btn:hover { background: rgba(255,255,255,0.12); }
+  .blk-btn.del:hover { background: rgba(160,82,45,0.5); }
+
+  .block-drag-handle {
+    position: absolute; left: -22px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-muted); font-size: 14px;
+    cursor: grab; opacity: 0;
+    transition: opacity 0.15s;
+    user-select: none;
+  }
+  .block:hover .block-drag-handle { opacity: 1; }
+
+  /* ── BLOCK HOVER LABEL ── */
+  .block-hover-label {
+    position: absolute; top: -11px; left: 10px;
+    background: var(--ink); color: var(--parchment);
+    font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
+    padding: 2px 8px; border-radius: 4px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.15s;
+    white-space: nowrap; z-index: 15;
+  }
+  .block:hover .block-hover-label { opacity: 1; }
+
+  /* ── PROPERTY PANEL ── */
+  .prop-panel {
+    width: 240px;
+    background: var(--parchment-dark);
+    border-left: 1px solid var(--border);
+    flex-shrink: 0;
+    overflow-y: auto;
+    transition: width 0.3s;
+  }
+  .prop-panel.empty { display: flex; align-items: center; justify-content: center; }
+  .prop-empty-msg { font-size: 12px; color: var(--ink-muted); text-align: center; padding: 24px; line-height: 1.6; }
+
+  .prop-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .prop-header-icon {
+    width: 26px; height: 26px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .prop-header-title { font-size: 13px; font-weight: 500; }
+  .prop-body { padding: 14px 16px; }
+  .prop-field { margin-bottom: 14px; }
+  .prop-label {
+    display: block;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 5px;
+  }
+  .prop-input, .prop-textarea, .prop-select {
+    width: 100%; font-size: 12px; font-family: 'DM Sans', sans-serif;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--parchment);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .prop-input:focus, .prop-textarea:focus, .prop-select:focus { border-color: var(--sage); }
+  .prop-textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+  .prop-hint { font-size: 10px; color: var(--ink-muted); margin-top: 4px; line-height: 1.4; }
+
+  /* ── TAB MANAGER ── */
+  .tab-manager { display: flex; flex-direction: column; gap: 6px; }
+  .tab-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tab-row-num {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--sage); color: #fff;
+    font-size: 10px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tab-name-input {
+    flex: 1; font-size: 12px; font-family: 'DM Sans', sans-serif;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--parchment);
+    color: var(--ink); outline: none;
+    transition: border-color 0.15s;
+  }
+  .tab-name-input:focus { border-color: var(--sage); }
+  .tab-remove-btn {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--parchment); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--ink-muted);
+    flex-shrink: 0; transition: all 0.13s;
+  }
+  .tab-remove-btn:hover { background: var(--terracotta-light); border-color: var(--terracotta); color: var(--terracotta); }
+  .tab-remove-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .tab-add-btn {
+    width: 100%; margin-top: 4px;
+    padding: 7px; border-radius: 8px;
+    border: 1.5px dashed var(--border-dark);
+    background: transparent; cursor: pointer;
+    font-size: 12px; color: var(--ink-muted);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s; display: flex;
+    align-items: center; justify-content: center; gap: 5px;
+  }
+  .tab-add-btn:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-light); }
+
+  /* ── RENDERED COMPONENTS ── */
+
+  /* TAB GROUP */
+  .r-tabs { background: #fff; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .r-tabs-nav { display: flex; border-bottom: 1px solid var(--border); background: var(--parchment-dark); }
+  .r-tab-btn {
+    flex: 1; padding: 10px 8px; font-size: 12px; font-weight: 500;
+    border: none; background: none; cursor: pointer;
+    color: var(--ink-muted); border-bottom: 2px solid transparent;
+    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .r-tab-btn.active { color: var(--sage); border-bottom-color: var(--sage); background: var(--parchment); }
+  .r-tabs-body { padding: 14px; }
+  .r-tabs-content { display: none; }
+  .r-tabs-content.active { display: block; }
+  .r-tab-textarea {
+    width: 100%; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; line-height: 1.65;
+    padding: 10px 12px; min-height: 100px;
+    border: 1px solid var(--border);
+    border-radius: 8px; background: var(--parchment);
+    color: var(--ink); resize: vertical; outline: none;
+    transition: border-color 0.15s;
+  }
+  .r-tab-textarea:focus { border-color: var(--sage); }
+  .r-tab-content-view {
+    font-size: 13px; line-height: 1.7; color: var(--ink);
+    min-height: 40px; padding: 4px 2px; white-space: pre-wrap;
+  }
+  .r-tab-empty { color: var(--ink-muted); font-style: italic; font-size: 12px; }
+
+  /* ── IMAGE COMPONENT ── */
+  .r-image { border-radius: var(--radius); overflow: hidden; }
+  .r-image-wrap { display: flex; }
+  .r-image-wrap.center { justify-content: center; }
+  .r-image-wrap.left   { justify-content: flex-start; }
+  .r-image-wrap.right  { justify-content: flex-end; }
+  .r-image-wrap img { max-width: 100%; border-radius: var(--radius); display: block; }
+  .r-image-caption { font-size: 12px; color: var(--ink-muted); text-align: center; margin-top: 6px; font-style: italic; }
+  .r-image-placeholder {
+    width: 100%; min-height: 120px; border-radius: var(--radius);
+    border: 2px dashed var(--border-dark); background: var(--parchment-dark);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .r-image-placeholder:hover { border-color: var(--sage); background: var(--sage-light); }
+  .r-image-placeholder-icon { font-size: 28px; opacity: 0.4; }
+  .r-image-placeholder-text { font-size: 12px; color: var(--ink-muted); }
+  .r-image-change-btn {
+    display: block; width: 100%; margin-top: 6px; padding: 5px;
+    border-radius: 6px; border: 1px dashed var(--border-dark);
+    background: transparent; font-size: 11px; color: var(--ink-muted);
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .r-image-change-btn:hover { border-color: var(--sage); color: var(--sage); }
+
+  /* ── VIDEO COMPONENT ── */
+  .r-video { border-radius: var(--radius); overflow: hidden; }
+  .r-video-thumb {
+    position: relative; width: 100%; padding-bottom: 56.25%;
+    border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    background: #000; display: block;
+  }
+  .r-video-thumb img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: opacity 0.2s;
+  }
+  .r-video-thumb:hover img { opacity: 0.85; }
+  .r-video-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(0,0,0,0.75);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s; pointer-events: none;
+  }
+  .r-video-thumb:hover .r-video-play { background: #c00; }
+  .r-video-play-arrow {
+    width: 0; height: 0;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    border-left: 22px solid #fff;
+    margin-left: 4px;
+  }
+  .r-video-open-note {
+    font-size: 11px; color: var(--ink-muted); text-align: center;
+    margin-top: 6px; font-style: italic;
+  }
+  .r-video-caption { font-size: 12px; color: var(--ink-muted); text-align: center; margin-top: 6px; font-style: italic; }
+  .r-video-input-wrap {
+    border: 2px dashed var(--border-dark); border-radius: var(--radius);
+    padding: 16px; background: var(--parchment-dark); display: flex; flex-direction: column; gap: 10px;
+  }
+  .r-video-input-label { font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-muted); }
+  .r-video-url-input {
+    width: 100%; padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--parchment);
+    font-size: 12px; font-family: 'DM Sans', sans-serif; color: var(--ink); outline: none;
+    transition: border-color 0.15s;
+  }
+  .r-video-url-input:focus { border-color: var(--sage); }
+  .r-video-url-input::placeholder { color: var(--ink-muted); }
+  .r-video-apply-btn {
+    align-self: flex-end; padding: 6px 16px; border-radius: 8px;
+    border: 1px solid var(--sage); background: transparent;
+    font-size: 12px; color: var(--sage); cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .r-video-apply-btn:hover { background: var(--sage); color: #fff; }
+
+  /* ── INLINE EDITABLE (build view) ── */
+  .r-editable {
+    outline: none; border-radius: 5px;
+    transition: background 0.15s, box-shadow 0.15s;
+    min-width: 40px; display: inline-block; width: 100%;
+  }
+  .r-editable:hover { background: rgba(92,122,94,0.07); }
+  .r-editable:focus {
+    background: rgba(92,122,94,0.1);
+    box-shadow: 0 0 0 2px var(--sage-mid);
+  }
+  .r-editable[placeholder]:empty::before {
+    content: attr(placeholder); color: var(--ink-muted);
+    font-style: italic; pointer-events: none;
+  }
+
+  /* poll option edit row */
+  .r-poll-option-edit {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; margin-bottom: 6px;
+    border: 1px solid var(--border);
+    border-radius: 8px; background: var(--parchment);
+  }
+  .r-poll-option-edit .r-poll-radio-dummy {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--border-dark); flex-shrink: 0;
+  }
+  .r-poll-option-edit .r-poll-opt-input {
+    flex: 1; border: none; background: transparent; outline: none;
+    font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--ink);
+  }
+  .r-poll-opt-remove {
+    width: 18px; height: 18px; border-radius: 4px; border: none;
+    background: none; cursor: pointer; font-size: 13px;
+    color: var(--ink-muted); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.12s;
+  }
+  .r-poll-opt-remove:hover { background: var(--terracotta-light); color: var(--terracotta); }
+  .r-poll-add-opt {
+    width: 100%; padding: 6px; border-radius: 8px; margin-top: 2px;
+    border: 1.5px dashed var(--border-dark); background: transparent;
+    font-size: 12px; color: var(--ink-muted); cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .r-poll-add-opt:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-light); }
+
+  /* HEADING */
+  .r-heading {
+    padding: 6px 4px;
+  }
+  .r-heading-text {
+    font-family: 'Lora', serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--ink);
+    border-bottom: 2px solid var(--gold-soft);
+    padding-bottom: 6px;
+  }
+  .r-heading-sub {
+    font-size: 12px; color: var(--ink-muted);
+    margin-top: 3px;
+  }
+
+  /* DIVIDER */
+  .r-divider { padding: 8px 0; }
+  .r-divider-line {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--ink-muted); font-size: 12px;
+  }
+  .r-divider-line::before, .r-divider-line::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .r-divider-symbol { color: var(--gold); font-size: 14px; }
+
+  /* SCRIPTURE */
+  .r-scripture {
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--parchment) 100%);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 16px;
+  }
+  .r-scripture-ref {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .r-scripture-ref::before { content: '✦'; font-size: 9px; }
+  .r-scripture-text {
+    font-family: 'Lora', serif;
+    font-size: 15px; line-height: 1.75;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  /* LEADER NOTE */
+  .r-note {
+    background: var(--terracotta-light);
+    border: 1px dashed var(--terracotta);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .r-note-icon { color: var(--terracotta); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .r-note-label {
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 4px;
+  }
+  .r-note-text {
+    font-size: 13px; color: var(--terracotta);
+    font-style: italic; line-height: 1.55;
+  }
+
+  /* QUESTION */
+  .r-question {
+    background: #fff;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .r-question-header {
+    padding: 12px 14px;
+    background: var(--sage-light);
+    border-bottom: 1px solid var(--sage-mid);
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .r-question-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--sage);
+    color: #fff; font-size: 11px; font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .r-question-text {
+    font-size: 14px; font-weight: 500; color: var(--ink); line-height: 1.4;
+  }
+  .r-question-body { padding: 10px 14px; }
+  .r-answer {
+    width: 100%; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; line-height: 1.6;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px; background: var(--parchment);
+    color: var(--ink); resize: vertical; min-height: 80px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .r-answer:focus { border-color: var(--sage); }
+
+  /* POLL */
+  .r-poll {
+    background: #fff; border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .r-poll-header {
+    padding: 12px 14px;
+    background: var(--parchment-dark);
+    border-bottom: 1px solid var(--border);
+    font-size: 14px; font-weight: 500; color: var(--ink);
+    display: flex; gap: 8px; align-items: center;
+  }
+  .r-poll-icon { color: var(--sage); }
+  .r-poll-body { padding: 10px 14px; }
+  .r-poll-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px; margin-bottom: 6px;
+    border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.15s;
+    background: var(--parchment);
+  }
+  .r-poll-option:hover { border-color: var(--sage); background: var(--sage-light); }
+  .r-poll-option.chosen { border-color: var(--sage); background: var(--sage-light); }
+  .r-poll-radio {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid var(--border-dark); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .r-poll-option.chosen .r-poll-radio { border-color: var(--sage); background: var(--sage); }
+  .r-poll-option.chosen .r-poll-radio::after {
+    content: ''; width: 6px; height: 6px;
+    border-radius: 50%; background: #fff;
+  }
+  .r-poll-label { font-size: 13px; color: var(--ink); }
+
+  /* TIMER */
+  .r-timer {
+    background: var(--ink);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .r-timer-left {}
+  .r-timer-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  .r-timer-display {
+    font-family: 'Lora', serif;
+    font-size: 32px; font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+  .r-timer-controls { display: flex; gap: 8px; align-items: center; }
+  .r-timer-btn {
+    padding: 7px 16px; border-radius: 8px;
+    font-size: 12px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; border: 1.5px solid; transition: all 0.15s;
+  }
+  .r-timer-btn.start { border-color: var(--gold); color: var(--gold); background: transparent; }
+  .r-timer-btn.start:hover { background: var(--gold); color: var(--ink); }
+  .r-timer-btn.pause { border-color: #fff; color: #fff; background: transparent; }
+  .r-timer-btn.pause:hover { background: rgba(255,255,255,0.12); }
+  .r-timer-btn.reset { border-color: rgba(255,255,255,0.2); color: var(--ink-muted); background: transparent; }
+  .r-timer-btn.reset:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+  .r-timer-ring {
+    width: 56px; height: 56px; flex-shrink: 0;
+  }
+  .r-timer-ring circle { transition: stroke-dashoffset 1s linear; }
+
+  /* ── PREVIEW MODAL ── */
+  .preview-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(44,36,22,0.6);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .preview-backdrop.open { display: flex; }
+  .preview-modal {
+    background: var(--parchment);
+    border-radius: var(--radius-lg);
+    width: 92%; max-width: 600px;
+    max-height: 90vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(44,36,22,0.3);
+  }
+  .preview-header {
+    padding: 14px 18px;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .preview-title {
+    font-family: 'Lora', serif;
+    font-size: 16px; color: var(--parchment);
+  }
+  .preview-close {
+    width: 28px; height: 28px; border: none; background: rgba(255,255,255,0.1);
+    border-radius: 6px; cursor: pointer; font-size: 16px; color: var(--parchment);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .preview-close:hover { background: rgba(255,255,255,0.2); }
+  .preview-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  /* ── MEMBER VIEW (full page) ── */
+  .member-view {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: var(--parchment);
+  }
+  .member-view.active { display: flex; }
+  .member-inner { max-width: 640px; margin: 0 auto; width: 100%; }
+
+  /* ── CELL GROUP NAME ── */
+  .r-cellgroup {
+    text-align: center;
+    padding: 20px 16px 16px;
+    margin-bottom: 4px;
+  }
+  .r-cellgroup-name {
+    font-family: 'Lora', serif;
+    font-size: 26px; font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .r-cellgroup-sub {
+    font-size: 12px; color: var(--ink-muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .r-cellgroup-name.r-editable {
+    display: block; width: 100%;
+    text-align: center;
+  }
+  .member-header {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .member-title {
+    font-family: 'Lora', serif;
+    font-size: 26px; color: var(--ink); margin-bottom: 4px;
+  }
+  .member-subtitle { font-size: 13px; color: var(--ink-muted); }
+
+  /* ── NOTIFICATION TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--parchment); font-size: 12px;
+    padding: 8px 18px; border-radius: 20px;
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none; z-index: 9999;
+  }
+  .toast.show { opacity: 1; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-dark); }
+
+  @media (max-width: 640px) {
+    .sidebar { display: none; }
+    .prop-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo">✦</div>
+      <div>
+        <div class="topbar-name">Jesus-Transforms-Lives</div>
+        <div class="topbar-tagline">Bible Study Template Builder</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <div class="topbar-mode">
+        <button class="mode-btn active" id="btnBuild" onclick="switchMode('build')">Build</button>
+        <button class="mode-btn" id="btnMember" onclick="switchMode('member')">Member View</button>
+      </div>
+      <button class="btn-topbar" onclick="loadFromFile()" title="Load a previously saved template">⬆ Load</button>
+      <button class="btn-topbar btn-save" onclick="saveTemplate()" title="Save your template as an HTML file">⬇ Save</button>
+      <button class="btn-preview" onclick="openPreview()">Preview ↗</button>
+    </div>
+  </div>
+
+  <!-- BUILDER MODE -->
+  <div class="main" id="builderMode">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">Component Palette</div>
+
+      <div class="comp-section">
+        <div class="comp-section-label">Session</div>
+        <div class="comp-tile" draggable="true" data-type="cellgroup">
+          <div class="comp-tile-icon icon-layout" style="font-size:11px;font-weight:600;">CG</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Cell Group Name</div>
+            <div class="comp-tile-desc">Session title banner</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="divider">
+          <div class="comp-tile-icon icon-layout">─</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Divider</div>
+            <div class="comp-tile-desc">Visual separator</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-section">
+        <div class="comp-section-label">Study Content</div>
+        <div class="comp-tile" draggable="true" data-type="note">
+          <div class="comp-tile-icon icon-content">✎</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Leader Note</div>
+            <div class="comp-tile-desc">Instructions for leaders</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="scripture">
+          <div class="comp-tile-icon icon-content">✦</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Scripture</div>
+            <div class="comp-tile-desc">Bible verse display</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="heading">
+          <div class="comp-tile-icon icon-content" style="font-family:'Lora',serif;font-size:14px;font-weight:600;">H</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Heading</div>
+            <div class="comp-tile-desc">Section title</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="image">
+          <div class="comp-tile-icon icon-content" style="font-size:15px;">🖼</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Image</div>
+            <div class="comp-tile-desc">GIF, JPG, PNG etc.</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="video">
+          <div class="comp-tile-icon icon-content" style="font-size:14px;color:#c00;">▶</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">YouTube Video</div>
+            <div class="comp-tile-desc">Paste a YouTube URL</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-section">
+        <div class="comp-section-label">Discussion</div>
+        <div class="comp-tile" draggable="true" data-type="tabs">
+          <div class="comp-tile-icon icon-interact">≡</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Tab Group</div>
+            <div class="comp-tile-desc">Multi-section navigation</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="question">
+          <div class="comp-tile-icon icon-interact">?</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Question</div>
+            <div class="comp-tile-desc">With answer input</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="poll">
+          <div class="comp-tile-icon icon-interact">☑</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Poll</div>
+            <div class="comp-tile-desc">Multiple choice</div>
+          </div>
+        </div>
+        <div class="comp-tile" draggable="true" data-type="timer">
+          <div class="comp-tile-icon icon-interact">⏱</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Timer</div>
+            <div class="comp-tile-desc">Discussion countdown</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="canvas-wrap" id="canvasWrap">
+      <div class="canvas-inner">
+        <div class="canvas-label">Template Canvas</div>
+        <div class="drop-zone" id="dropZone" onclick="deselectAll()">
+          <div class="drop-empty" id="dropEmpty">
+            <div class="drop-empty-cross">✦</div>
+            <div class="drop-empty-text">Drag components from the left panel to begin building your template</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPERTY PANEL -->
+    <div class="prop-panel empty" id="propPanel">
+      <div class="prop-empty-msg">Select a component to edit its properties</div>
+    </div>
+
+  </div><!-- /builder mode -->
+
+  <!-- MEMBER VIEW -->
+  <div class="member-view" id="memberMode">
+    <div class="member-inner">
+      <div id="memberContent"></div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- PREVIEW MODAL -->
+<div class="preview-backdrop" id="previewBackdrop" onclick="closePreview(event)">
+  <div class="preview-modal">
+    <div class="preview-header">
+      <div class="preview-title">Member Preview</div>
+      <button class="preview-close" onclick="closePreview()">✕</button>
+    </div>
+    <div class="preview-body" id="previewContent"></div>
+  </div>
+</div>
+
+<!-- HIDDEN FILE INPUT FOR LOAD -->
+<input type="file" id="loadFileInput" accept=".html" style="display:none" onchange="handleLoadFile(event)">
+<!-- HIDDEN FILE INPUT FOR IMAGE UPLOAD -->
+<input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageFile(event)">
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+let blocks = [];
+let selectedId = null;
+let dragSrcType = null;
+let timerStates = {};
+let questionCounters = {};
+
+function uid() { return '_' + Math.random().toString(36).slice(2, 9); }
+
+// ── DEFAULT PROPS ──
+function defaultProps(type) {
+  const tabCount = blocks.filter(b => b.type === 'tabs').length;
+  const qCount = blocks.filter(b => b.type === 'question').length;
+  const map = {
+    tabs:     { labels: 'Tab 1,Tab 2,Tab 3', activeTab: 0, contents: ['','',''] },
+    cellgroup:{ name: '', subtitle: 'Cell Group Session' },
+    heading:  { text: '', subtitle: '' },
+    divider:  { symbol: '✦' },
+    scripture:{ ref: '', text: '' },
+    note:     { label: '', text: '' },
+    question: { question: '', placeholder: 'Share your thoughts here ...', number: qCount + 1 },
+    poll:     { question: '', options: 'Option 1,Option 2,Option 3' },
+    timer:    { minutes: 5, label: 'Discussion Time' },
+    image:    { src: '', caption: '', align: 'center' },
+    video:    { url: '', caption: '' },
+  };
+  return JSON.parse(JSON.stringify(map[type] || {}));
+}
+
+// ── ICONS / COLORS ──
+const typeInfo = {
+  cellgroup:{ icon: 'CG', label: 'Cell Group Name', cls: 'icon-layout' },
+  tabs:     { icon: '≡',  label: 'Tab Group',       cls: 'icon-layout' },
+  heading:  { icon: 'H',  label: 'Heading',          cls: 'icon-layout' },
+  divider:  { icon: '─',  label: 'Divider',          cls: 'icon-layout' },
+  scripture:{ icon: '✦', label: 'Scripture',        cls: 'icon-content' },
+  note:     { icon: '✎', label: 'Leader Note',      cls: 'icon-content' },
+  image:    { icon: '🖼', label: 'Image',            cls: 'icon-content' },
+  video:    { icon: '▶',  label: 'YouTube Video',    cls: 'icon-content' },
+  question: { icon: '?',  label: 'Question',         cls: 'icon-interact' },
+  poll:     { icon: '☑', label: 'Poll',              cls: 'icon-interact' },
+  timer:    { icon: '⏱', label: 'Timer',             cls: 'icon-interact' },
+};
+
+// ── DRAG FROM SIDEBAR ──
+document.querySelectorAll('.comp-tile').forEach(tile => {
+  tile.addEventListener('dragstart', e => {
+    dragSrcType = tile.dataset.type;
+    dragSrcBlockId = null;
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('text/plain', tile.dataset.type);
+  });
+  tile.addEventListener('dragend', () => {
+    dragSrcType = null;
+    clearDropIndicator();
+  });
+});
+
+// ── ATTACH DROP ZONE LISTENERS (done once after DOM ready) ──
+function initDropZone() {
+  const zone = document.getElementById('dropZone');
+  zone.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = dragSrcBlockId ? 'move' : 'copy';
+    zone.classList.add('drag-over');
+    const idx = getInsertIndex(zone, e.clientY);
+    if (zone.dataset.pendingInsert !== String(idx)) {
+      showDropIndicator(zone, idx);
+    }
+  });
+  zone.addEventListener('dragleave', e => {
+    if (!zone.contains(e.relatedTarget)) {
+      clearDropIndicator();
+    }
+  });
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    const rawIdx = zone.dataset.pendingInsert;
+    const insertIdx = (rawIdx !== undefined && rawIdx !== '') ? parseInt(rawIdx) : blocks.length;
+    clearDropIndicator();
+    if (dragSrcType) {
+      const t = dragSrcType;
+      dragSrcType = null;
+      addBlock(t, insertIdx);
+    } else if (dragSrcBlockId) {
+      const id = dragSrcBlockId;
+      dragSrcBlockId = null;
+      reorderBlock(id, insertIdx);
+    }
+  });
+}
+
+// ── FIND INSERT INDEX FROM MOUSE Y ──
+function getInsertIndex(zone, clientY) {
+  // Include ALL blocks (even the faded dragging one) so the index
+  // maps directly to positions in the blocks[] array.
+  const blockEls = [...zone.querySelectorAll('.block')];
+  if (blockEls.length === 0) return 0;
+  for (let i = 0; i < blockEls.length; i++) {
+    const rect = blockEls[i].getBoundingClientRect();
+    if (clientY < rect.top + rect.height / 2) return i;
+  }
+  return blockEls.length;
+}
+
+// ── DROP INDICATOR ──
+function showDropIndicator(zone, insertIdx) {
+  const old = zone.querySelector('.drop-indicator');
+  if (old) old.remove();
+  zone.dataset.pendingInsert = insertIdx;
+  const indicator = document.createElement('div');
+  indicator.className = 'drop-indicator';
+  const blockEls = [...zone.querySelectorAll('.block')];
+  if (blockEls.length === 0 || insertIdx >= blockEls.length) {
+    zone.appendChild(indicator);
+  } else {
+    zone.insertBefore(indicator, blockEls[insertIdx]);
+  }
+}
+
+function clearDropIndicator() {
+  const zone = document.getElementById('dropZone');
+  if (!zone) return;
+  const ind = zone.querySelector('.drop-indicator');
+  if (ind) ind.remove();
+  delete zone.dataset.pendingInsert;
+  zone.classList.remove('drag-over');
+}
+
+// ── ADD BLOCK AT INDEX ──
+function addBlock(type, insertIdx) {
+  const id = uid();
+  const props = defaultProps(type);
+  if (type === 'question') {
+    props.number = blocks.filter(b => b.type === 'question').length + 1;
+  }
+  const idx = (insertIdx != null) ? insertIdx : blocks.length;
+  blocks.splice(idx, 0, { id, type, props });
+  renderCanvas();
+  selectBlock(id);
+  updateDropEmpty();
+}
+
+// ── REORDER EXISTING BLOCK ──
+let dragSrcBlockId = null;
+function reorderBlock(id, toIdx) {
+  const fromIdx = blocks.findIndex(b => b.id === id);
+  if (fromIdx < 0) return;
+  // Remove from original position
+  const [block] = blocks.splice(fromIdx, 1);
+  // toIdx was measured on the full DOM list before removal.
+  // If dragging downward, removal shifts subsequent indices up by 1.
+  const target = Math.min(toIdx > fromIdx ? toIdx - 1 : toIdx, blocks.length);
+  blocks.splice(target, 0, block);
+  renderCanvas();
+  selectBlock(id);
+}
+
+function updateDropEmpty() {
+  document.getElementById('dropEmpty').style.display = blocks.length ? 'none' : 'flex';
+}
+
+// ── RENDER CANVAS ──
+function renderCanvas() {
+  const zone = document.getElementById('dropZone');
+  const existing = zone.querySelectorAll('.block');
+  existing.forEach(el => el.remove());
+
+  blocks.forEach((block, idx) => {
+    const el = document.createElement('div');
+    el.className = 'block' + (block.id === selectedId ? ' selected' : '');
+    el.dataset.id = block.id;
+    el.draggable = true;
+    el.innerHTML = `
+      <div class="block-hover-label">${typeInfo[block.type]?.label || block.type}</div>
+      <div class="block-drag-handle" title="Drag to reorder">⠿</div>
+      <div class="block-toolbar">
+        <button class="blk-btn" title="Move up" onclick="moveBlock('${block.id}',-1,event)">↑</button>
+        <button class="blk-btn" title="Move down" onclick="moveBlock('${block.id}',1,event)">↓</button>
+        <button class="blk-btn" title="Duplicate" onclick="duplicateBlock('${block.id}',event)">⧉</button>
+        <button class="blk-btn del" title="Delete" onclick="deleteBlock('${block.id}',event)">✕</button>
+      </div>
+      ${renderBlockInner(block)}
+    `;
+    el.addEventListener('click', (e) => { e.stopPropagation(); selectBlock(block.id); });
+
+    // block-level drag for reordering
+    el.addEventListener('dragstart', (e) => {
+      dragSrcBlockId = block.id;
+      dragSrcType = null;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', block.id);
+      setTimeout(() => el.classList.add('dragging-block'), 0);
+    });
+    el.addEventListener('dragend', () => {
+      el.classList.remove('dragging-block');
+      dragSrcBlockId = null;
+      clearDropIndicator();
+    });
+
+    zone.appendChild(el);
+  });
+  updateDropEmpty();
+}
+
+// ── RENDER BLOCK INNER (BUILDER) ──
+function renderBlockInner(block, viewMode = false) {
+  const p = block.props;
+  switch (block.type) {
+    case 'cellgroup':
+      return viewMode
+        ? `<div class="r-cellgroup">
+            <div class="r-cellgroup-name">${p.name || ''}</div>
+            ${p.subtitle ? `<div class="r-cellgroup-sub">${p.subtitle}</div>` : ''}
+           </div>`
+        : `<div class="r-cellgroup">
+            <div class="r-cellgroup-name r-editable" contenteditable="true" spellcheck="false"
+              placeholder="Enter your Cell Group Name here ..."
+              oninput="saveProp('${block.id}','name',this.innerText)"
+              onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+            >${p.name || ''}</div>
+            <div class="r-cellgroup-sub r-editable" contenteditable="true" spellcheck="false"
+              placeholder="Session subtitle (optional)"
+              oninput="saveProp('${block.id}','subtitle',this.innerText)"
+              onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+              style="margin-top:6px;display:block;text-align:center;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-muted);"
+            >${p.subtitle || ''}</div>
+           </div>`;
+
+    case 'tabs': {
+      const tabs = splitTabs(p.labels);
+      const active = p.activeTab || 0;
+      const contents = p.contents || tabs.map(() => '');
+      if (viewMode) {
+        // View mode: tabs are fully clickable buttons
+        return `<div class="r-tabs">
+          <div class="r-tabs-nav">${tabs.map((t, i) =>
+            `<button class="r-tab-btn ${i === active ? 'active' : ''}"
+              onclick="setTabActive('${block.id}',${i},event)">${t}</button>`).join('')}
+          </div>
+          <div class="r-tabs-body">
+            ${tabs.map((t, i) =>
+              `<div class="r-tabs-content ${i === active ? 'active' : ''}">
+                <div class="r-tab-content-view">${(contents[i] || '').replace(/\n/g, '<br>') || `<span class="r-tab-empty">No content added yet.</span>`}</div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+      }
+      // Build mode: contenteditable tab names + add/remove tabs
+      return `<div class="r-tabs">
+        <div class="r-tabs-nav-edit" style="display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--parchment-dark);overflow-x:auto;">
+          ${tabs.map((t, i) =>
+            `<div class="r-tab-edit-wrap"
+              style="display:flex;align-items:center;border-bottom:2px solid ${i === active ? 'var(--sage)' : 'transparent'};padding:4px 6px 2px;gap:3px;flex-shrink:0;">
+              <div class="r-tab-name-ce r-editable" contenteditable="true" spellcheck="false"
+                data-tab-ce="${i}"
+                style="font-size:12px;font-weight:500;min-width:40px;max-width:160px;
+                       color:${i === active ? 'var(--sage)' : 'var(--ink-muted)'};
+                       outline:none;font-family:'DM Sans',sans-serif;cursor:text;
+                       padding:2px 4px;border-radius:4px;white-space:nowrap;"
+                onclick="setTabActive('${block.id}',${i},event)"
+                onmousedown="event.stopPropagation()"
+                oninput="renameTab('${block.id}',${i},this.innerText)"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+              >${t}</div>
+              <button style="background:none;border:none;cursor:pointer;font-size:13px;
+                             color:var(--ink-muted);padding:0 2px;line-height:1;
+                             opacity:${tabs.length <= 1 ? '0.2' : '0.6'};"
+                onclick="removeTab('${block.id}',${i},event)"
+                ${tabs.length <= 1 ? 'disabled' : ''}
+                title="Remove tab">×</button>
+            </div>`).join('')}
+          <button style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--sage);
+                         padding:4px 10px;flex-shrink:0;line-height:1;opacity:0.7;"
+            onclick="addTab('${block.id}',event)" title="Add tab">＋</button>
+        </div>
+        <div class="r-tabs-body">
+          ${tabs.map((t, i) =>
+            `<div class="r-tabs-content ${i === active ? 'active' : ''}">
+              <textarea class="r-tab-textarea"
+                placeholder="Type content for the '${t}' tab..."
+                oninput="updateTabContent('${block.id}',${i},this.value)"
+                onclick="event.stopPropagation()"
+              >${contents[i] || ''}</textarea>
+            </div>`).join('')}
+        </div>
+      </div>`;
+    }
+
+    case 'heading':
+      return viewMode
+        ? `<div class="r-heading">
+            <div class="r-heading-text">${p.text || ''}</div>
+            ${p.subtitle ? `<div class="r-heading-sub">${p.subtitle}</div>` : ''}
+           </div>`
+        : `<div class="r-heading">
+            <div class="r-heading-text r-editable" contenteditable="true" spellcheck="false"
+              placeholder="Enter your Discussion Topic here ..."
+              oninput="saveProp('${block.id}','text',this.innerText)"
+              onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+            >${p.text || ''}</div>
+            <div class="r-heading-sub r-editable" contenteditable="true" spellcheck="false"
+              placeholder="Subtitle (optional)"
+              oninput="saveProp('${block.id}','subtitle',this.innerText)"
+              onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+              style="margin-top:4px;"
+            >${p.subtitle || ''}</div>
+           </div>`;
+
+    case 'divider':
+      return `<div class="r-divider">
+        <div class="r-divider-line">
+          <span class="r-divider-symbol">${p.symbol || '✦'}</span>
+        </div>
+      </div>`;
+
+    case 'scripture':
+      return viewMode
+        ? `<div class="r-scripture">
+            <div class="r-scripture-ref">${p.ref || ''}</div>
+            <div class="r-scripture-text">${p.text || ''}</div>
+           </div>`
+        : `<div class="r-scripture">
+            <div class="r-scripture-ref r-editable" contenteditable="true" spellcheck="false"
+              placeholder="Enter your book name, chapter and verse here ..."
+              oninput="saveProp('${block.id}','ref',this.innerText)"
+              onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+            >${p.ref || ''}</div>
+            <div class="r-scripture-text r-editable" contenteditable="true" spellcheck="true"
+              placeholder="Enter the bible verse here ..."
+              oninput="saveProp('${block.id}','text',this.innerText)"
+              onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+              style="margin-top:6px;"
+            >${p.text || ''}</div>
+           </div>`;
+
+    case 'note':
+      return viewMode
+        ? `<div class="r-note">
+            <div class="r-note-icon">✎</div>
+            <div>
+              <div class="r-note-label">${p.label || 'Leader Note'}</div>
+              <div class="r-note-text">${p.text || ''}</div>
+            </div>
+           </div>`
+        : `<div class="r-note">
+            <div class="r-note-icon">✎</div>
+            <div style="flex:1;">
+              <div class="r-note-label r-editable" contenteditable="true" spellcheck="false"
+                placeholder="Your name ..."
+                oninput="saveProp('${block.id}','label',this.innerText)"
+                onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--terracotta);margin-bottom:4px;"
+              >${p.label || ''}</div>
+              <div class="r-note-text r-editable" contenteditable="true" spellcheck="true"
+                placeholder="Enter your welcome message ..."
+                oninput="saveProp('${block.id}','text',this.innerText)"
+                onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+              >${p.text || ''}</div>
+            </div>
+           </div>`;
+
+    case 'question':
+      return viewMode
+        ? `<div class="r-question">
+            <div class="r-question-header">
+              <div class="r-question-num">${p.number || '?'}</div>
+              <div class="r-question-text">${p.question || ''}</div>
+            </div>
+            <div class="r-question-body">
+              <textarea class="r-answer" placeholder="Share your thoughts here ..."
+                onclick="event.stopPropagation()"
+                onmousedown="event.stopPropagation()"
+                ondragstart="event.stopPropagation()"
+                oninput="saveAnswer('${block.id}', this.value)"
+              >${p.answer || ''}</textarea>
+            </div>
+           </div>`
+        : `<div class="r-question">
+            <div class="r-question-header">
+              <div class="r-question-num">${p.number || '?'}</div>
+              <div class="r-question-text r-editable" contenteditable="true" spellcheck="true"
+                placeholder="Enter your question here ..."
+                oninput="saveProp('${block.id}','question',this.innerText)"
+                onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+              >${p.question || ''}</div>
+            </div>
+            <div class="r-question-body">
+              <textarea class="r-answer" placeholder="Share your thoughts here ..."
+                onclick="event.stopPropagation()"
+                onmousedown="event.stopPropagation()"
+                ondragstart="event.stopPropagation()"
+                oninput="saveAnswer('${block.id}', this.value)"
+              >${p.answer || ''}</textarea>
+            </div>
+           </div>`;
+
+    case 'poll': {
+      const opts = splitTabs(p.options);
+      if (viewMode) {
+        return `<div class="r-poll">
+          <div class="r-poll-header">
+            <span class="r-poll-icon">☑</span>
+            ${p.question || ''}
+          </div>
+          <div class="r-poll-body">
+            ${opts.map((o, i) => `
+              <div class="r-poll-option" onclick="choosePoll(this)">
+                <div class="r-poll-radio"></div>
+                <div class="r-poll-label">${o}</div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+      }
+      return `<div class="r-poll">
+        <div class="r-poll-header" style="display:flex;align-items:center;gap:8px;">
+          <span class="r-poll-icon">☑</span>
+          <div class="r-editable" contenteditable="true" spellcheck="true"
+            placeholder="Enter your question here ..."
+            oninput="saveProp('${block.id}','question',this.innerText)"
+            onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+            style="flex:1;"
+          >${p.question || ''}</div>
+        </div>
+        <div class="r-poll-body" id="pollBody_${block.id}">
+          ${opts.map((o, i) => `
+            <div class="r-poll-option-edit">
+              <div class="r-poll-radio-dummy"></div>
+              <div class="r-editable" contenteditable="true" spellcheck="false"
+                placeholder="Option ${i+1}"
+                oninput="savePollOption('${block.id}',${i},this.innerText)"
+                onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                style="flex:1;font-size:13px;"
+              >${isDefaultOption(o, i) ? '' : o}</div>
+              <button class="r-poll-opt-remove" title="Remove option"
+                onclick="removePollOption('${block.id}',${i},event)">×</button>
+            </div>`).join('')}
+          <button class="r-poll-add-opt"
+            onclick="addPollOption('${block.id}',event)">＋ Add option</button>
+        </div>
+      </div>`;
+    }
+
+    case 'image': {
+      const src = p.src || '';
+      const align = p.align || 'center';
+      if (viewMode) {
+        return src
+          ? `<div class="r-image">
+               <div class="r-image-wrap ${align}">
+                 <img src="${src}" alt="${p.caption || ''}">
+               </div>
+               ${p.caption ? `<div class="r-image-caption">${p.caption}</div>` : ''}
+             </div>`
+          : '';
+      }
+      return `<div class="r-image">
+        ${src
+          ? `<div class="r-image-wrap ${align}"><img src="${src}" alt="${p.caption || ''}"></div>
+             <button class="r-image-change-btn" onclick="pickImage('${block.id}',event)">⬆ Change image</button>`
+          : `<div class="r-image-placeholder" onclick="pickImage('${block.id}',event)">
+               <div class="r-image-placeholder-icon">🖼</div>
+               <div class="r-image-placeholder-text">Click to upload an image</div>
+               <div class="r-image-placeholder-text" style="font-size:10px;opacity:0.6;">GIF, JPG, JPEG, PNG, WebP</div>
+             </div>`
+        }
+        <div class="r-image-caption r-editable" contenteditable="true" spellcheck="false"
+          placeholder="Add a caption (optional)"
+          oninput="saveProp('${block.id}','caption',this.innerText)"
+          onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+          style="margin-top:6px;"
+        >${p.caption || ''}</div>
+      </div>`;
+    }
+
+    case 'video': {
+      const url = p.url || '';
+      const embedId = extractYouTubeId(url);
+      if (viewMode) {
+        return embedId
+          ? `<div class="r-video">
+               ${renderYouTubeThumb(embedId, p.caption)}
+             </div>`
+          : '';
+      }
+      return `<div class="r-video">
+        ${embedId
+          ? `${renderYouTubeThumb(embedId, p.caption)}
+             <div class="r-video-caption r-editable" contenteditable="true" spellcheck="false"
+               placeholder="Add a caption (optional)"
+               oninput="saveProp('${block.id}','caption',this.innerText)"
+               onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+               style="margin-top:8px;"
+             >${p.caption || ''}</div>`
+          : ''
+        }
+        <div class="r-video-input-wrap" style="${embedId ? 'margin-top:10px;' : ''}">
+          <div class="r-video-input-label">${embedId ? '⬆ Change YouTube URL' : '▶ Paste YouTube URL'}</div>
+          <input class="r-video-url-input" type="url" id="videoInput_${block.id}"
+            value="${url}" placeholder="https://youtu.be/... or https://www.youtube.com/watch?v=..."
+            onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();applyVideoUrl('${block.id}',event);}">
+          <button class="r-video-apply-btn" onclick="applyVideoUrl('${block.id}',event)">Apply</button>
+        </div>
+      </div>`;
+    }
+
+    case 'timer':
+      return renderTimerBlock(block, viewMode ? 'view' : 'build');
+    default: return '';
+  }
+}
+
+function renderTimerBlock(block, viewSuffix = 'build') {
+  const p = block.props;
+  const mins = parseInt(p.minutes) || 5;
+  const ts = timerStates[block.id] || { remaining: mins * 60, running: false };
+  timerStates[block.id] = ts;
+  const m = Math.floor(ts.remaining / 60);
+  const s = ts.remaining % 60;
+  const display = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const total = mins * 60;
+  const pct = total > 0 ? ts.remaining / total : 1;
+  const circ = 2 * Math.PI * 22;
+  const offset = circ * (1 - pct);
+  const dispId = `timerDisp_${block.id}_${viewSuffix}`;
+  const btnId  = `timerBtn_${block.id}_${viewSuffix}`;
+  const ringId = `timerRing_${block.id}_${viewSuffix}`;
+  return `<div class="r-timer">
+    <div class="r-timer-left" style="flex:1;">
+      <div class="r-timer-label">${p.label || 'Discussion Time'}</div>
+      <div class="r-timer-display" id="${dispId}">${display}</div>
+    </div>
+    <div class="r-timer-controls">
+      <button class="r-timer-btn ${ts.running ? 'pause' : 'start'}" id="${btnId}"
+        onclick="toggleTimer('${block.id}',${mins},event)">${ts.running ? 'Pause' : 'Start'}</button>
+      <button class="r-timer-btn reset"
+        onclick="resetTimer('${block.id}',${mins},event)">Reset</button>
+    </div>
+    <svg class="r-timer-ring" viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+      <circle id="${ringId}" cx="25" cy="25" r="22" fill="none"
+        stroke="${pct > 0.33 ? '#b8860b' : '#a0522d'}" stroke-width="3"
+        stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
+        stroke-linecap="round" transform="rotate(-90 25 25)"/>
+    </svg>
+  </div>`;
+}
+
+// ── TAB ──
+function setTabActive(id, idx, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  if (block.props.activeTab === idx) return;
+  block.props.activeTab = idx;
+
+  // Find ALL rendered instances of this tab group across build, member and preview views
+  // and update each one in-place (no re-render needed).
+  document.querySelectorAll('.r-tabs').forEach(tabsEl => {
+    // Check if this r-tabs belongs to our block by inspecting any onclick in its nav
+    const firstBtn = tabsEl.querySelector('.r-tabs-nav button, .r-tab-name-ce, .r-tab-btn');
+    if (!firstBtn) return;
+    const onc = firstBtn.getAttribute('onclick') || '';
+    if (!onc.includes(`'${id}'`) && !onc.includes(`"${id}"`)) return;
+
+    // Update tab buttons (view mode uses .r-tab-btn)
+    tabsEl.querySelectorAll('.r-tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', i === idx);
+    });
+    // Update build mode tab wraps (.r-tab-edit-wrap)
+    tabsEl.querySelectorAll('.r-tab-edit-wrap').forEach((wrap, i) => {
+      wrap.style.borderBottomColor = i === idx ? 'var(--sage)' : 'transparent';
+      const ce = wrap.querySelector('.r-tab-name-ce');
+      if (ce) ce.style.color = i === idx ? 'var(--sage)' : 'var(--ink-muted)';
+    });
+    // Switch content panels
+    tabsEl.querySelectorAll('.r-tabs-content').forEach((panel, i) => {
+      panel.classList.toggle('active', i === idx);
+    });
+  });
+}
+
+function updateTabContent(id, tabIdx, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  if (!block.props.contents) block.props.contents = [];
+  block.props.contents[tabIdx] = value;
+}
+
+function renameTab(id, idx, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tabs = splitTabs(block.props.labels);
+  tabs[idx] = (value || '').replace(/\n/g, '').trim() || 'Tab';
+  block.props.labels = tabs.join(',');
+  if (selectedId === id) renderProps();
+}
+
+function addTab(id, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tabs = splitTabs(block.props.labels);
+  const newName = `Tab ${tabs.length + 1}`;
+  tabs.push(newName);
+  block.props.labels = tabs.join(',');
+  const contents = block.props.contents || [];
+  contents.push('');
+  block.props.contents = contents;
+  block.props.activeTab = tabs.length - 1;
+  renderCanvas();
+  if (selectedId === id) renderProps();
+  // Focus the new contenteditable tab name div and select all text
+  setTimeout(() => {
+    const zone = document.getElementById('dropZone');
+    const blockEl = zone ? zone.querySelector(`[data-id="${id}"]`) : null;
+    if (!blockEl) return;
+    const divs = blockEl.querySelectorAll('.r-tab-name-ce');
+    if (!divs.length) return;
+    const last = divs[divs.length - 1];
+    last.focus();
+    const range = document.createRange();
+    range.selectNodeContents(last);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }, 30);
+}
+
+function removeTab(id, idx, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tabs = splitTabs(block.props.labels);
+  if (tabs.length <= 1) return;
+  tabs.splice(idx, 1);
+  block.props.labels = tabs.join(',');
+  const contents = block.props.contents || [];
+  contents.splice(idx, 1);
+  block.props.contents = contents;
+  if (block.props.activeTab >= tabs.length) block.props.activeTab = tabs.length - 1;
+  renderCanvas();
+  if (selectedId === id) renderProps();
+}
+
+function saveAnswer(id, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  block.props.answer = value;
+}
+
+// Generic prop saver for contenteditable fields — no re-render needed
+function saveProp(id, key, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  block.props[key] = value;
+}
+
+// Poll option helpers
+function isDefaultOption(text, idx) {
+  // Treat "Option N" (case-insensitive, trimmed) as a placeholder default
+  return (text || '').trim().toLowerCase() === `option ${idx + 1}`;
+}
+
+function savePollOption(id, idx, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const opts = splitTabs(block.props.options);
+  // If user clears it back to empty, restore the default label in data so splitTabs works
+  opts[idx] = value.trim() || `Option ${idx + 1}`;
+  block.props.options = opts.join(',');
+}
+function addPollOption(id, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const opts = splitTabs(block.props.options);
+  const newLabel = `Option ${opts.length + 1}`;
+  opts.push(newLabel);
+  block.props.options = opts.join(',');
+  renderCanvas();
+  setTimeout(() => {
+    const body = document.getElementById('pollBody_' + id);
+    if (!body) return;
+    const divs = body.querySelectorAll('.r-editable[contenteditable]');
+    if (divs.length) {
+      const last = divs[divs.length - 1];
+      last.focus();
+    }
+  }, 30);
+}
+function removePollOption(id, idx, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const opts = splitTabs(block.props.options);
+  if (opts.length <= 1) return;
+  opts.splice(idx, 1);
+  block.props.options = opts.join(',');
+  renderCanvas();
+}
+
+// ── POLL ──
+function choosePoll(el) {
+  const siblings = el.parentElement.querySelectorAll('.r-poll-option');
+  siblings.forEach(s => s.classList.remove('chosen'));
+  el.classList.add('chosen');
+}
+
+// ── TIMER ──
+let timerIntervals = {};
+function toggleTimer(id, defaultMins, e) {
+  if (e) e.stopPropagation();
+  const ts = timerStates[id] || { remaining: defaultMins * 60, running: false };
+  if (ts.running) {
+    clearInterval(timerIntervals[id]);
+    ts.running = false;
+  } else {
+    if (ts.remaining <= 0) { resetTimer(id, defaultMins, e); return; }
+    ts.running = true;
+    timerIntervals[id] = setInterval(() => {
+      ts.remaining = Math.max(0, ts.remaining - 1);
+      updateTimerDisplay(id, defaultMins);
+      if (ts.remaining <= 0) {
+        clearInterval(timerIntervals[id]);
+        ts.running = false;
+        showToast('Time\'s up! ✦');
+        updateTimerBtnState(id, false);
+      }
+    }, 1000);
+  }
+  updateTimerDisplay(id, defaultMins);
+  updateTimerBtnState(id, ts.running);
+}
+function resetTimer(id, defaultMins, e) {
+  if (e) e.stopPropagation();
+  clearInterval(timerIntervals[id]);
+  const ts = timerStates[id] || {};
+  ts.remaining = defaultMins * 60;
+  ts.running = false;
+  timerStates[id] = ts;
+  updateTimerDisplay(id, defaultMins);
+  updateTimerBtnState(id, false);
+}
+function updateTimerDisplay(id, totalMins) {
+  const ts = timerStates[id];
+  if (!ts) return;
+  const m = Math.floor(ts.remaining / 60), s = ts.remaining % 60;
+  const text = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const totalSecs = totalMins * 60;
+  const p = totalSecs > 0 ? ts.remaining / totalSecs : 1;
+  const circ = 2 * Math.PI * 22;
+  ['build','view'].forEach(suffix => {
+    const disp = document.getElementById(`timerDisp_${id}_${suffix}`);
+    const ring = document.getElementById(`timerRing_${id}_${suffix}`);
+    if (disp) disp.textContent = text;
+    if (ring) {
+      ring.style.strokeDashoffset = circ * (1 - p);
+      ring.style.stroke = p > 0.33 ? '#b8860b' : '#a0522d';
+    }
+  });
+}
+function updateTimerBtnState(id, running) {
+  ['build','view'].forEach(suffix => {
+    const btn = document.getElementById(`timerBtn_${id}_${suffix}`);
+    if (!btn) return;
+    btn.className = 'r-timer-btn ' + (running ? 'pause' : 'start');
+    btn.textContent = running ? 'Pause' : 'Start';
+  });
+}
+
+// ── SELECT ──
+function selectBlock(id) {
+  if (selectedId === id) return; // already selected — don't re-render and kill focus
+  selectedId = id;
+  renderCanvas();
+  renderProps();
+}
+function deselectAll() {
+  selectedId = null;
+  renderCanvas();
+  document.getElementById('propPanel').innerHTML = '<div class="prop-empty-msg">Select a component to edit its properties</div>';
+  document.getElementById('propPanel').classList.add('empty');
+}
+
+// ── MOVE / DUPLICATE / DELETE ──
+function moveBlock(id, dir, e) {
+  e.stopPropagation();
+  const idx = blocks.findIndex(b => b.id === id);
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= blocks.length) return;
+  [blocks[idx], blocks[newIdx]] = [blocks[newIdx], blocks[idx]];
+  renderCanvas();
+  showToast('Component moved');
+}
+function duplicateBlock(id, e) {
+  e.stopPropagation();
+  const src = blocks.find(b => b.id === id);
+  if (!src) return;
+  const newId = uid();
+  const clone = { id: newId, type: src.type, props: JSON.parse(JSON.stringify(src.props)) };
+  const idx = blocks.findIndex(b => b.id === id);
+  blocks.splice(idx + 1, 0, clone);
+  renderCanvas();
+  selectBlock(newId);
+  showToast('Duplicated');
+}
+function deleteBlock(id, e) {
+  e.stopPropagation();
+  clearInterval(timerIntervals[id]);
+  delete timerStates[id];
+  blocks = blocks.filter(b => b.id !== id);
+  if (selectedId === id) deselectAll();
+  renderCanvas();
+  showToast('Removed');
+}
+
+// ── PROPERTY PANEL ──
+function renderProps() {
+  const block = blocks.find(b => b.id === selectedId);
+  const panel = document.getElementById('propPanel');
+  if (!block) {
+    panel.classList.add('empty');
+    panel.innerHTML = '<div class="prop-empty-msg">Select a component to edit its properties</div>';
+    return;
+  }
+  panel.classList.remove('empty');
+  const info = typeInfo[block.type];
+  const p = block.props;
+
+  const fields = propFields(block);
+  panel.innerHTML = `
+    <div class="prop-header">
+      <div class="prop-header-icon ${info.cls}" style="font-size:12px;">${info.icon}</div>
+      <div class="prop-header-title">${info.label}</div>
+    </div>
+    <div class="prop-body">${fields}</div>
+  `;
+
+  panel.querySelectorAll('[data-key]').forEach(input => {
+    input.addEventListener('input', e => {
+      const key = e.target.dataset.key;
+      let val = e.target.value;
+      if (e.target.type === 'number') val = parseInt(val) || 1;
+      block.props[key] = val;
+      renderCanvas();
+    });
+  });
+
+  // ── TAB MANAGER WIRING ──
+  if (block.type === 'tabs') {
+    const manager = panel.querySelector(`#tabManager_${block.id}`);
+    if (!manager) return;
+
+    function getTabsFromManager() {
+      return [...manager.querySelectorAll('[data-tab-name]')].map(i => i.value.trim() || 'Tab');
+    }
+
+    // Rename tab
+    manager.querySelectorAll('[data-tab-name]').forEach(input => {
+      input.addEventListener('input', () => {
+        block.props.labels = getTabsFromManager().join(',');
+        renderCanvas();
+      });
+    });
+
+    // Remove tab
+    manager.querySelectorAll('[data-tab-remove]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.tabRemove);
+        const tabs = getTabsFromManager();
+        if (tabs.length <= 1) return;
+        tabs.splice(idx, 1);
+        block.props.labels = tabs.join(',');
+        // keep contents in sync
+        const contents = block.props.contents || [];
+        contents.splice(idx, 1);
+        block.props.contents = contents;
+        if (block.props.activeTab >= tabs.length) block.props.activeTab = tabs.length - 1;
+        renderCanvas();
+        renderProps();
+      });
+    });
+
+    // Add tab
+    const addBtn = panel.querySelector(`#tabAddBtn_${block.id}`);
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        const tabs = getTabsFromManager();
+        tabs.push('New Tab');
+        block.props.labels = tabs.join(',');
+        // keep contents in sync
+        const contents = block.props.contents || [];
+        contents.push('');
+        block.props.contents = contents;
+        block.props.activeTab = tabs.length - 1;
+        renderCanvas();
+        renderProps();
+        setTimeout(() => {
+          const inputs = panel.querySelectorAll('[data-tab-name]');
+          if (inputs.length) inputs[inputs.length - 1].select();
+        }, 30);
+      });
+    }
+  }
+} // end renderProps
+
+function propFields(block) {
+  const p = block.props;
+  const field = (key, label, type, hint) => {
+    const val = p[key] != null ? p[key] : '';
+    if (type === 'textarea') {
+      return `<div class="prop-field">
+        <label class="prop-label">${label}</label>
+        <textarea class="prop-textarea" data-key="${key}">${val}</textarea>
+        ${hint ? `<div class="prop-hint">${hint}</div>` : ''}
+      </div>`;
+    }
+    if (type === 'number') {
+      return `<div class="prop-field">
+        <label class="prop-label">${label}</label>
+        <input class="prop-input" type="number" min="1" max="120" data-key="${key}" value="${val}">
+        ${hint ? `<div class="prop-hint">${hint}</div>` : ''}
+      </div>`;
+    }
+    return `<div class="prop-field">
+      <label class="prop-label">${label}</label>
+      <input class="prop-input" type="text" data-key="${key}" value="${val}">
+      ${hint ? `<div class="prop-hint">${hint}</div>` : ''}
+    </div>`;
+  };
+
+  switch (block.type) {
+    case 'cellgroup':
+      return field('name', 'Cell Group Name', 'text') +
+             field('subtitle', 'Subtitle (optional)', 'text');
+    case 'tabs': {
+      const tabs = splitTabs(p.labels);
+      const rows = tabs.map((t, i) => `
+        <div class="tab-row" data-tab-idx="${i}">
+          <div class="tab-row-num">${i + 1}</div>
+          <input class="tab-name-input" type="text" value="${t.replace(/"/g,'&quot;')}" data-tab-name="${i}" placeholder="Tab name">
+          <button class="tab-remove-btn" data-tab-remove="${i}" title="Remove tab" ${tabs.length <= 1 ? 'disabled' : ''}>×</button>
+        </div>`).join('');
+      return `<div class="prop-field">
+        <label class="prop-label">Tabs</label>
+        <div class="tab-manager" id="tabManager_${block.id}">
+          ${rows}
+          <button class="tab-add-btn" id="tabAddBtn_${block.id}">＋ Add tab</button>
+        </div>
+      </div>`;
+    }
+    case 'heading':
+      return field('text', 'Heading Text', 'text') + field('subtitle', 'Subtitle (optional)', 'text');
+    case 'divider':
+      return field('symbol', 'Centre Symbol', 'text', 'E.g. ✦  ✝  •  —');
+    case 'scripture':
+      return field('ref', 'Reference', 'text', 'E.g. John 3:16') + field('text', 'Verse Text', 'textarea');
+    case 'note':
+      return field('text', 'Note Content', 'textarea', 'Visible only when in Leader mode');
+    case 'question':
+      return field('question', 'Question Text', 'textarea') +
+             field('placeholder', 'Answer Placeholder', 'text') +
+             field('number', 'Question Number', 'text');
+    case 'poll':
+      return field('question', 'Poll Question', 'text') +
+             field('options', 'Options', 'textarea', 'Comma-separated. Each on new line or separated by commas.');
+    case 'timer':
+      return field('label', 'Label', 'text') + field('minutes', 'Duration (minutes)', 'number');
+    case 'image':
+      return field('caption', 'Caption (optional)', 'text') +
+             `<div class="prop-field">
+               <label class="prop-label">Alignment</label>
+               <select class="prop-input" data-key="align">
+                 <option value="center" ${p.align==='center'?'selected':''}>Centre</option>
+                 <option value="left"   ${p.align==='left'  ?'selected':''}>Left</option>
+                 <option value="right"  ${p.align==='right' ?'selected':''}>Right</option>
+               </select>
+             </div>`;
+    case 'video':
+      return field('caption', 'Caption (optional)', 'text');
+    default: return '';
+  }
+}
+
+// ── IMAGE HELPERS ──
+let _pendingImageBlockId = null;
+function pickImage(id, e) {
+  if (e) e.stopPropagation();
+  _pendingImageBlockId = id;
+  document.getElementById('imageFileInput').click();
+}
+function handleImageFile(e) {
+  const file = e.target.files[0];
+  if (!file || !_pendingImageBlockId) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const block = blocks.find(b => b.id === _pendingImageBlockId);
+    if (!block) return;
+    block.props.src = ev.target.result; // base64 data URL — embedded in HTML on save
+    _pendingImageBlockId = null;
+    renderCanvas();
+    showToast('Image loaded ✦');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+// ── VIDEO HELPERS ──
+function renderYouTubeThumb(embedId, caption) {
+  const watchUrl = `https://www.youtube.com/watch?v=${embedId}`;
+  const thumbUrl = `https://img.youtube.com/vi/${embedId}/hqdefault.jpg`;
+  return `<a class="r-video-thumb" href="${watchUrl}" target="_blank" rel="noopener"
+      onclick="event.stopPropagation()">
+    <img src="${thumbUrl}" alt="YouTube video thumbnail" loading="lazy">
+    <div class="r-video-play"><div class="r-video-play-arrow"></div></div>
+  </a>
+  <div class="r-video-open-note">▶ Click thumbnail to watch on YouTube</div>
+  ${caption ? `<div class="r-video-caption">${caption}</div>` : ''}`;
+}
+
+function extractYouTubeId(url) {
+  if (!url) return '';
+  // Strip any leading/trailing whitespace
+  url = url.trim();
+  // Try URL parsing first for robustness
+  try {
+    const u = new URL(url);
+    // youtu.be/ID
+    if (u.hostname === 'youtu.be') {
+      const id = u.pathname.slice(1).split('/')[0];
+      if (id && id.length >= 11) return id.slice(0, 11);
+    }
+    // youtube.com/watch?v=ID or youtube.com/shorts/ID or youtube.com/embed/ID
+    if (u.hostname.includes('youtube.com')) {
+      const v = u.searchParams.get('v');
+      if (v) return v.slice(0, 11);
+      const parts = u.pathname.split('/').filter(Boolean);
+      // /embed/ID or /shorts/ID
+      if (parts.length >= 2 && (parts[0] === 'embed' || parts[0] === 'shorts')) {
+        return parts[1].slice(0, 11);
+      }
+    }
+  } catch (e) { /* fall through to regex */ }
+  // Fallback regex patterns
+  const patterns = [
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    /[?&]v=([a-zA-Z0-9_-]{11})/,
+    /\/embed\/([a-zA-Z0-9_-]{11})/,
+    /\/shorts\/([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const re of patterns) {
+    const m = url.match(re);
+    if (m) return m[1];
+  }
+  return '';
+}
+function applyVideoUrl(id, e) {
+  if (e) e.stopPropagation();
+  const input = document.getElementById('videoInput_' + id);
+  if (!input) return;
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  block.props.url = input.value.trim();
+  if (!extractYouTubeId(block.props.url)) {
+    showToast('Could not find a YouTube video ID in that URL.');
+    return;
+  }
+  renderCanvas();
+  showToast('Video loaded ✦');
+}
+
+// ── HELPER ──
+function splitTabs(str) {
+  return (str || '').split(',').map(s => s.trim()).filter(Boolean);
+}
+
+// ── MODES ──
+function switchMode(mode) {
+  document.getElementById('btnBuild').classList.toggle('active', mode === 'build');
+  document.getElementById('btnMember').classList.toggle('active', mode === 'member');
+  document.getElementById('builderMode').style.display = mode === 'build' ? 'flex' : 'none';
+  const mv = document.getElementById('memberMode');
+  mv.style.display = mode === 'member' ? 'flex' : 'none';
+  if (mode === 'member') renderMemberView(document.getElementById('memberContent'));
+}
+
+// ── RENDER FOR MEMBER / PREVIEW ──
+function renderForViewing(container) {
+  container.innerHTML = '';
+  blocks.forEach(block => {
+    const el = document.createElement('div');
+    el.style.marginBottom = '14px';
+    el.innerHTML = renderBlockInner(block, true);
+    container.appendChild(el);
+  });
+}
+
+function renderMemberView(container) {
+  renderForViewing(container);
+  container.querySelectorAll('.r-poll-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const siblings = opt.parentElement.querySelectorAll('.r-poll-option');
+      siblings.forEach(s => s.classList.remove('chosen'));
+      opt.classList.add('chosen');
+    });
+  });
+}
+
+// ── PREVIEW ──
+function openPreview() {
+  const content = document.getElementById('previewContent');
+  renderForViewing(content);
+  document.getElementById('previewBackdrop').classList.add('open');
+}
+function closePreview(e) {
+  if (e && e.target !== document.getElementById('previewBackdrop')) return;
+  document.getElementById('previewBackdrop').classList.remove('open');
+}
+document.querySelector('.preview-close').onclick = () => {
+  document.getElementById('previewBackdrop').classList.remove('open');
+};
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── SAMPLE TEMPLATE ──
+function loadSample() {
+  [
+    { type: 'cellgroup', props: { name: '', subtitle: 'Cell Group Session' } },
+    { type: 'divider',   props: { symbol: '✦' } },
+    { type: 'note',      props: { label: '', text: '' } },
+    { type: 'scripture', props: { ref: '', text: '' } },
+    { type: 'heading',   props: { text: '', subtitle: '' } },
+    { type: 'divider',   props: { symbol: '✦' } },
+    { type: 'tabs',      props: { labels: 'Tab 1,Tab 2,Tab 3', activeTab: 0, contents: ['','',''] } },
+    { type: 'question',  props: { question: '', placeholder: 'Share your thoughts here ...', number: 1 } },
+    { type: 'poll',      props: { question: '', options: 'Option 1,Option 2,Option 3' } },
+    { type: 'timer',     props: { minutes: 5, label: 'Group sharing time' } },
+  ].forEach(({ type, props }) => {
+    const id = uid();
+    timerStates[id] = { remaining: (props.minutes || 5) * 60, running: false };
+    blocks.push({ id, type, props });
+  });
+  renderCanvas();
+  updateDropEmpty();
+}
+
+// ── SAVE TEMPLATE ──
+function saveTemplate() {
+  // Embed the current blocks data as a JSON script tag in the HTML
+  const data = JSON.stringify({ blocks, timerStates });
+  const marker = '<!--LUMINOS_DATA_START-->';
+  const markerEnd = '<!--LUMINOS_DATA_END-->';
+  let html = document.documentElement.outerHTML;
+
+  // Remove any previously saved data block
+  const prev = html.indexOf(marker);
+  if (prev !== -1) {
+    const end = html.indexOf(markerEnd) + markerEnd.length;
+    html = html.slice(0, prev) + html.slice(end);
+  }
+
+  // Inject data block just before </body>
+  const dataBlock = `${marker}<script>window.__LUMINOS_SAVED__=${JSON.stringify(data)};<\/script>${markerEnd}`;
+  html = html.replace('</body>', dataBlock + '</body>');
+
+  // Get cell group name for filename
+  const cgBlock = blocks.find(b => b.type === 'cellgroup');
+  const cgName = (cgBlock && cgBlock.props.name && cgBlock.props.name.trim())
+    ? cgBlock.props.name.trim().replace(/[^a-z0-9 _-]/gi, '').replace(/\s+/g, '-')
+    : 'jesus-transforms-lives';
+  const filename = `${cgName}.html`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Saved as ' + filename + ' ✦');
+}
+
+// ── LOAD TEMPLATE ──
+function loadFromFile() {
+  document.getElementById('loadFileInput').click();
+}
+
+function handleLoadFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const html = ev.target.result;
+      const marker = '<!--LUMINOS_DATA_START-->';
+      const markerEnd = '<!--LUMINOS_DATA_END-->';
+      const start = html.indexOf(marker);
+      if (start === -1) { showToast('No saved data found in this file.'); return; }
+      const chunk = html.slice(start, html.indexOf(markerEnd));
+      const match = chunk.match(/window\.__LUMINOS_SAVED__=(.*?);<\/script>/s);
+      if (!match) { showToast('Could not read saved data.'); return; }
+      const parsed = JSON.parse(JSON.parse(match[1]));
+      // Restore state
+      blocks = parsed.blocks || [];
+      Object.assign(timerStates, parsed.timerStates || {});
+      selectedId = null;
+      renderCanvas();
+      updateDropEmpty();
+      deselectAll();
+      showToast('Template loaded ✦');
+    } catch (err) {
+      showToast('Failed to load: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  // Reset so same file can be re-loaded
+  e.target.value = '';
+}
+
+initDropZone();
+loadSample();
+</script>
+</body>
+</html>
