@@ -1,0 +1,3 @@
+cd ~/Documents/dev/interactive-session-builder
+git remote set-url origin git@github.com:superwave135/Interactive-Session-Builder.git
+git push -u origin main
