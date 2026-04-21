@@ -15,13 +15,17 @@ export default defineNuxtConfig({
   },
 
   devtools: {
-    enabled: true
+    enabled: process.env.NODE_ENV === 'development'
   },
 
   css: ['~/assets/css/main.css'],
 
   routeRules: {
     '/': { prerender: true }
+  },
+
+  nitro: {
+    preset: 'cloudflare-pages'
   },
 
   compatibilityDate: '2025-01-15',
