@@ -1,18 +1,93 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap");
 
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-serif: 'Lora', serif;
 
-  --color-green-50: #EFFDF5;
-  --color-green-100: #D9FBE8;
-  --color-green-200: #B3F5D1;
-  --color-green-300: #75EDAE;
-  --color-green-400: #00DC82;
-  --color-green-500: #00C16A;
-  --color-green-600: #00A155;
-  --color-green-700: #007F45;
-  --color-green-800: #016538;
-  --color-green-900: #0A5331;
-  --color-green-950: #052E16;
+  /* Earthy sage — primary colour slot */
+  --color-green-50:  #f4f7f4;
+  --color-green-100: #e8f0e8;
+  --color-green-200: #d1e1d2;
+  --color-green-300: #b8ceb9;
+  --color-green-400: #7da882;
+  --color-green-500: #5c7a5e;
+  --color-green-600: #4a6a4c;
+  --color-green-700: #3a5a3c;
+  --color-green-800: #2c4a2e;
+  --color-green-900: #1e3a20;
+  --color-green-950: #0f2010;
+
+  /* Earthy stone — neutral slot */
+  --color-stone-50:  #f7f2ea;
+  --color-stone-100: #ede6d6;
+  --color-stone-200: #d5c9b5;
+  --color-stone-300: #b8a898;
+  --color-stone-400: #9c8f77;
+  --color-stone-500: #7d7060;
+  --color-stone-600: #5a4f3c;
+  --color-stone-700: #3e3628;
+  --color-stone-800: #2c2416;
+  --color-stone-900: #1a150c;
+  --color-stone-950: #0d0a06;
+}
+
+/* ── Light mode tokens ─────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  --parchment:        #f7f2ea;
+  --parchment-dark:   #ede6d6;
+  --surface:          #ffffff;
+  --ink:              #2c2416;
+  --ink-soft:         #5a4f3c;
+  --ink-muted:        #9c8f77;
+  --sage:             #5c7a5e;
+  --sage-light:       #e8f0e8;
+  --sage-mid:         #b8ceb9;
+  --gold:             #b8860b;
+  --gold-light:       #f5e8c0;
+  --gold-soft:        #e8d4a0;
+  --terracotta:       #a0522d;
+  --terracotta-light: #f5e8e0;
+  --border:           #d5c9b5;
+  --border-dark:      #b8a898;
+  --shadow:           rgba(44, 36, 22, 0.08);
+  --shadow-md:        rgba(44, 36, 22, 0.14);
+  --radius:           10px;
+  --radius-lg:        16px;
+
+  /* Topbar stays dark in both modes — intentional app-chrome colour */
+  --topbar-bg:        #2c2416;
+  --topbar-fg:        #f7f2ea;
+  --topbar-border:    rgba(247, 242, 234, 0.12);
+}
+
+/* ── Dark mode tokens ──────────────────────────────────── */
+html.dark {
+  color-scheme: dark;
+
+  --topbar-bg:        #1a150c;
+  --topbar-fg:        #f0eadf;
+  --topbar-border:    rgba(240, 234, 223, 0.12);
+
+  --parchment:        #1e1a14;
+  --parchment-dark:   #161210;
+  --surface:          #261f17;
+  --ink:              #f0eadf;
+  --ink-soft:         #c8b8a0;
+  --ink-muted:        #7a6a58;
+  --sage:             #7da882;
+  --sage-light:       #1a2a1b;
+  --sage-mid:         #3a5a3c;
+  --gold:             #d4a520;
+  --gold-light:       #2a2010;
+  --gold-soft:        #3a2e14;
+  --terracotta:       #c06a3c;
+  --terracotta-light: #2a1a10;
+  --border:           #3e3228;
+  --border-dark:      #4e4030;
+  --shadow:           rgba(0, 0, 0, 0.35);
+  --shadow-md:        rgba(0, 0, 0, 0.50);
 }

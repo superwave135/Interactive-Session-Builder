@@ -17,6 +17,10 @@ logs
 .DS_Store
 .fleet
 .idea
+git.txt
+
+# Lock files (project uses pnpm)
+package-lock.json
 
 # Local env files
 .env

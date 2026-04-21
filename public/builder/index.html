@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jesus-Transforms-Lives — Bible Study Template Builder</title>
+<title>Jesus Transforms Lives — Bible Study Template Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -27,6 +27,12 @@
     --shadow-md: rgba(44,36,22,0.14);
     --radius: 10px;
     --radius-lg: 16px;
+    --surface: #ffffff;
+    /* Always-dark chrome tokens — do not flip with dark mode injection */
+    --topbar-bg: #2c2416;
+    --topbar-fg: #f7f2ea;
+    --topbar-muted: rgba(247, 242, 234, 0.5);
+    --topbar-border-color: rgba(247, 242, 234, 0.12);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -44,8 +50,8 @@
 
   /* ── TOP BAR ── */
   .topbar {
-    background: var(--ink);
-    color: var(--parchment);
+    background: var(--parchment-dark);
+    color: var(--ink);
     padding: 0 24px;
     height: 56px;
     display: flex;
@@ -54,6 +60,7 @@
     flex-shrink: 0;
     position: relative;
     z-index: 100;
+    border-bottom: 1px solid var(--border);
   }
   .topbar-brand {
     display: flex; align-items: center; gap: 12px;
@@ -71,7 +78,7 @@
     font-family: 'Lora', serif;
     font-size: 18px;
     letter-spacing: 0.03em;
-    color: var(--parchment);
+    color: var(--ink);
   }
   .topbar-tagline {
     font-size: 11px;
@@ -81,16 +88,17 @@
   .topbar-actions { display: flex; gap: 8px; align-items: center; }
   .topbar-mode {
     display: flex;
-    background: rgba(255,255,255,0.08);
+    background: var(--parchment);
     border-radius: 8px;
     padding: 3px;
     gap: 2px;
+    border: 1px solid var(--border);
   }
   .mode-btn {
     font-size: 12px; font-weight: 500;
     padding: 5px 14px; border-radius: 6px;
     border: none; cursor: pointer; transition: all 0.18s;
-    color: rgba(247,242,234,0.6);
+    color: var(--ink-muted);
     background: transparent;
   }
   .mode-btn.active {
@@ -110,13 +118,13 @@
   .btn-topbar {
     font-size: 12px; font-weight: 500;
     padding: 7px 14px; border-radius: 8px;
-    border: 1.5px solid rgba(255,255,255,0.2);
+    border: 1.5px solid var(--border-dark);
     cursor: pointer; background: transparent;
-    color: rgba(247,242,234,0.75);
+    color: var(--ink-muted);
     font-family: 'DM Sans', sans-serif;
     transition: all 0.18s;
   }
-  .btn-topbar:hover { border-color: rgba(255,255,255,0.5); color: var(--parchment); background: rgba(255,255,255,0.06); }
+  .btn-topbar:hover { border-color: var(--ink-muted); color: var(--ink); background: var(--parchment); }
   .btn-topbar.btn-save { border-color: var(--sage-mid); color: var(--sage-mid); }
   .btn-topbar.btn-save:hover { background: var(--sage); border-color: var(--sage); color: #fff; }
 
@@ -192,13 +200,13 @@
   .canvas-wrap {
     flex: 1;
     overflow-y: auto;
-    padding: 24px;
+    padding: 24px 16px;
     background: var(--parchment);
     position: relative;
   }
 
   .canvas-inner {
-    max-width: 700px;
+    max-width: 50%;
     margin: 0 auto;
   }
 
@@ -291,7 +299,7 @@
   .block-toolbar {
     position: absolute; top: -1px; right: 6px;
     display: none;
-    background: var(--ink);
+    background: var(--topbar-bg);
     border-radius: 0 0 8px 8px;
     padding: 3px 5px;
     gap: 2px;
@@ -305,7 +313,7 @@
     background: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     font-size: 12px; border-radius: 4px;
-    color: var(--parchment);
+    color: var(--topbar-fg);
     transition: background 0.12s;
   }
   .blk-btn:hover { background: rgba(255,255,255,0.12); }
@@ -324,7 +332,7 @@
   /* ── BLOCK HOVER LABEL ── */
   .block-hover-label {
     position: absolute; top: -11px; left: 10px;
-    background: var(--ink); color: var(--parchment);
+    background: var(--topbar-bg); color: var(--topbar-fg);
     font-size: 10px; font-weight: 500; letter-spacing: 0.05em;
     padding: 2px 8px; border-radius: 4px;
     opacity: 0; pointer-events: none;
@@ -426,7 +434,7 @@
   /* ── RENDERED COMPONENTS ── */
 
   /* TAB GROUP */
-  .r-tabs { background: #fff; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .r-tabs { background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
   .r-tabs-nav { display: flex; border-bottom: 1px solid var(--border); background: var(--parchment-dark); }
   .r-tab-btn {
     flex: 1; padding: 10px 8px; font-size: 12px; font-weight: 500;
@@ -651,7 +659,7 @@
 
   /* QUESTION */
   .r-question {
-    background: #fff;
+    background: var(--surface);
     border-radius: var(--radius);
     border: 1px solid var(--border);
     overflow: hidden;
@@ -686,7 +694,7 @@
 
   /* POLL */
   .r-poll {
-    background: #fff; border-radius: var(--radius);
+    background: var(--surface); border-radius: var(--radius);
     border: 1px solid var(--border); overflow: hidden;
   }
   .r-poll-header {
@@ -723,7 +731,8 @@
 
   /* TIMER */
   .r-timer {
-    background: var(--ink);
+    background: var(--parchment-dark);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 14px 16px;
     display: flex; align-items: center; justify-content: space-between;
@@ -745,15 +754,16 @@
     cursor: pointer; border: 1.5px solid; transition: all 0.15s;
   }
   .r-timer-btn.start { border-color: var(--gold); color: var(--gold); background: transparent; }
-  .r-timer-btn.start:hover { background: var(--gold); color: var(--ink); }
-  .r-timer-btn.pause { border-color: #fff; color: #fff; background: transparent; }
-  .r-timer-btn.pause:hover { background: rgba(255,255,255,0.12); }
-  .r-timer-btn.reset { border-color: rgba(255,255,255,0.2); color: var(--ink-muted); background: transparent; }
-  .r-timer-btn.reset:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+  .r-timer-btn.start:hover { background: var(--gold); color: var(--surface); }
+  .r-timer-btn.pause { border-color: var(--sage); color: var(--sage); background: transparent; }
+  .r-timer-btn.pause:hover { background: var(--sage); color: var(--surface); }
+  .r-timer-btn.reset { border-color: var(--border-dark); color: var(--ink-muted); background: transparent; }
+  .r-timer-btn.reset:hover { border-color: var(--ink-muted); color: var(--ink); background: var(--parchment); }
   .r-timer-ring {
     width: 56px; height: 56px; flex-shrink: 0;
   }
   .r-timer-ring circle { transition: stroke-dashoffset 1s linear; }
+  .r-timer-ring-track { stroke: var(--border-dark); }
 
   /* ── PREVIEW MODAL ── */
   .preview-backdrop {
@@ -774,17 +784,17 @@
   }
   .preview-header {
     padding: 14px 18px;
-    background: var(--ink);
+    background: var(--topbar-bg);
     display: flex; align-items: center; justify-content: space-between;
     flex-shrink: 0;
   }
   .preview-title {
     font-family: 'Lora', serif;
-    font-size: 16px; color: var(--parchment);
+    font-size: 16px; color: var(--topbar-fg);
   }
   .preview-close {
     width: 28px; height: 28px; border: none; background: rgba(255,255,255,0.1);
-    border-radius: 6px; cursor: pointer; font-size: 16px; color: var(--parchment);
+    border-radius: 6px; cursor: pointer; font-size: 16px; color: var(--topbar-fg);
     display: flex; align-items: center; justify-content: center;
   }
   .preview-close:hover { background: rgba(255,255,255,0.2); }
@@ -800,11 +810,11 @@
     flex-direction: column;
     flex: 1;
     overflow-y: auto;
-    padding: 24px;
+    padding: 24px 16px;
     background: var(--parchment);
   }
   .member-view.active { display: flex; }
-  .member-inner { max-width: 640px; margin: 0 auto; width: 100%; }
+  .member-inner { max-width: 50%; margin: 0 auto; width: 100%; }
 
   /* ── CELL GROUP NAME ── */
   .r-cellgroup {
@@ -840,8 +850,8 @@
   /* ── NOTIFICATION TOAST ── */
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-    background: var(--ink);
-    color: var(--parchment); font-size: 12px;
+    background: var(--topbar-bg);
+    color: var(--topbar-fg); font-size: 12px;
     padding: 8px 18px; border-radius: 20px;
     opacity: 0; transition: opacity 0.3s;
     pointer-events: none; z-index: 9999;
@@ -857,6 +867,41 @@
   @media (max-width: 640px) {
     .sidebar { display: none; }
     .prop-panel { display: none; }
+
+    /* Topbar */
+    .topbar {
+      height: auto;
+      min-height: 52px;
+      padding: 8px 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .topbar-tagline { display: none; }
+    .topbar-logo { width: 26px; height: 26px; font-size: 14px; }
+    .topbar-name { font-size: 14px; }
+    .topbar-brand { gap: 8px; }
+    .topbar-actions { gap: 4px; flex-wrap: wrap; }
+    .topbar-mode { padding: 2px; }
+    .mode-btn { padding: 4px 10px; font-size: 11px; }
+    .btn-topbar { padding: 5px 10px; font-size: 11px; }
+    .btn-preview { padding: 5px 10px; font-size: 11px; }
+
+    /* Canvas */
+    .canvas-wrap { padding: 16px 10px; }
+    .canvas-inner { max-width: 100%; }
+    .drop-zone { min-height: 300px; padding: 12px; }
+
+    /* Member view */
+    .member-view { padding: 16px 10px; }
+    .member-inner { max-width: 100%; }
+
+    /* Blocks — wider tap targets */
+    .block { margin-bottom: 12px; }
+    .blk-btn { width: 28px; height: 28px; }
+    .block-drag-handle { display: none; }
+
+    /* Property panel hidden, prop inputs not needed */
+    .r-timer-controls { flex-wrap: wrap; gap: 6px; }
   }
 </style>
 </head>
@@ -869,7 +914,7 @@
     <div class="topbar-brand">
       <div class="topbar-logo">✦</div>
       <div>
-        <div class="topbar-name">Jesus-Transforms-Lives</div>
+        <div class="topbar-name">Jesus Transforms Lives</div>
         <div class="topbar-tagline">Bible Study Template Builder</div>
       </div>
     </div>
@@ -878,8 +923,8 @@
         <button class="mode-btn active" id="btnBuild" onclick="switchMode('build')">Build</button>
         <button class="mode-btn" id="btnMember" onclick="switchMode('member')">Member View</button>
       </div>
-      <button class="btn-topbar" onclick="loadFromFile()" title="Load a previously saved template">⬆ Load</button>
-      <button class="btn-topbar btn-save" onclick="saveTemplate()" title="Save your template as an HTML file">⬇ Save</button>
+      <button class="btn-topbar" onclick="loadFromFile()" title="Upload a previously saved template">⬆ Upload</button>
+      <button class="btn-topbar" onclick="saveTemplate()" title="Download your template as an HTML file">⬇ Download</button>
       <button class="btn-preview" onclick="openPreview()">Preview ↗</button>
     </div>
   </div>
@@ -1031,7 +1076,7 @@
 
 <script>
 // ── STATE ──
-let blocks = [];
+var blocks = [];
 let selectedId = null;
 let dragSrcType = null;
 let timerStates = {};
@@ -1571,7 +1616,7 @@ function renderTimerBlock(block, viewSuffix = 'build') {
         onclick="resetTimer('${block.id}',${mins},event)">Reset</button>
     </div>
     <svg class="r-timer-ring" viewBox="0 0 50 50">
-      <circle cx="25" cy="25" r="22" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+      <circle class="r-timer-ring-track" cx="25" cy="25" r="22" fill="none" stroke-width="3"/>
       <circle id="${ringId}" cx="25" cy="25" r="22" fill="none"
         stroke="${pct > 0.33 ? '#b8860b' : '#a0522d'}" stroke-width="3"
         stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
@@ -2208,7 +2253,7 @@ function saveTemplate() {
   const cgBlock = blocks.find(b => b.type === 'cellgroup');
   const cgName = (cgBlock && cgBlock.props.name && cgBlock.props.name.trim())
     ? cgBlock.props.name.trim().replace(/[^a-z0-9 _-]/gi, '').replace(/\s+/g, '-')
-    : 'jesus-transforms-lives';
+    : 'jesus transforms lives';
   const filename = `${cgName}.html`;
 
   const blob = new Blob([html], { type: 'text/html' });
