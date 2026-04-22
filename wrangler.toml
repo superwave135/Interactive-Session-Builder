@@ -1,4 +1,0 @@
-name = "interactive-session-builder"
-pages_build_output_dir = ".output/public"
-compatibility_date = "2025-01-15"
-compatibility_flags = ["nodejs_compat"]
