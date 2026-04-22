@@ -1,6 +1,9 @@
 {
   "name": "interactive-session-builder",
-  "pages_build_output_dir": "dist",
+  "main": ".output/server/index.mjs",
   "compatibility_date": "2025-01-15",
-  "compatibility_flags": ["nodejs_compat"]
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".output/public"
+  }
 }
