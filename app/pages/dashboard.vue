@@ -1,35 +1,62 @@
 <template>
   <div class="dashboard">
-
     <!-- Header -->
     <header class="dash-header">
-      <NuxtLink to="/" class="dash-brand">✝️ Jesus Transforms Lives</NuxtLink>
+      <NuxtLink
+        to="/"
+        class="dash-brand"
+      >✝️ Jesus Transforms Lives</NuxtLink>
       <div class="dash-user">
         <UColorModeButton />
         <span>{{ user?.email }}</span>
-        <button class="btn-signout" @click="signOut">Sign Out</button>
+        <button
+          class="btn-signout"
+          @click="signOut"
+        >
+          Sign Out
+        </button>
       </div>
     </header>
 
     <!-- Main -->
     <main class="dash-main">
-
       <div class="dash-top">
         <h2>My Sessions</h2>
-        <button class="btn-new" @click="newSession">+ New Session</button>
+        <button
+          class="btn-new"
+          @click="newSession"
+        >
+          + New Session
+        </button>
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="dash-empty">Loading your sessions…</div>
+      <div
+        v-if="loading"
+        class="dash-empty"
+      >
+        Loading your sessions…
+      </div>
 
       <!-- Empty state -->
-      <div v-else-if="sessions.length === 0" class="dash-empty">
+      <div
+        v-else-if="sessions.length === 0"
+        class="dash-empty"
+      >
         <p>You don't have any sessions yet.</p>
-        <button class="btn-new" @click="newSession">Create your first session</button>
+        <button
+          class="btn-new"
+          @click="newSession"
+        >
+          Create your first session
+        </button>
       </div>
 
       <!-- Session cards -->
-      <div v-else class="session-grid">
+      <div
+        v-else
+        class="session-grid"
+      >
         <div
           v-for="session in sessions"
           :key="session.id"
@@ -37,29 +64,53 @@
         >
           <div class="session-card-body">
             <h3>{{ session.title }}</h3>
-            <p class="session-date">{{ formatDate(session.updated_at) }}</p>
+            <p class="session-date">
+              {{ formatDate(session.updated_at) }}
+            </p>
           </div>
           <div class="session-card-actions">
-            <button class="btn-edit" @click="openSession(session.id)">Open</button>
-            <button class="btn-delete" @click="confirmDelete(session)">Delete</button>
+            <button
+              class="btn-edit"
+              @click="openSession(session.id)"
+            >
+              Open
+            </button>
+            <button
+              class="btn-delete"
+              @click="confirmDelete(session)"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
-
     </main>
 
     <!-- Delete confirmation modal -->
-    <div v-if="sessionToDelete" class="modal-overlay" @click.self="sessionToDelete = null">
+    <div
+      v-if="sessionToDelete"
+      class="modal-overlay"
+      @click.self="sessionToDelete = null"
+    >
       <div class="modal">
         <h3>Delete session?</h3>
         <p>"{{ sessionToDelete.title }}" will be permanently deleted.</p>
         <div class="modal-actions">
-          <button class="btn-cancel" @click="sessionToDelete = null">Cancel</button>
-          <button class="btn-confirm-delete" @click="deleteSession">Delete</button>
+          <button
+            class="btn-cancel"
+            @click="sessionToDelete = null"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn-confirm-delete"
+            @click="deleteSession"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 

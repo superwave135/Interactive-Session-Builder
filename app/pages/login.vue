@@ -3,7 +3,6 @@
     <UColorModeButton class="mode-toggle" />
 
     <div class="auth-card">
-
       <!-- Logo / Branding -->
       <div class="auth-header">
         <h1>✝ Jesus Transforms Lives</h1>
@@ -12,16 +11,25 @@
 
       <!-- Tab toggle: Login vs Sign Up -->
       <div class="auth-tabs">
-        <button :class="{ active: mode === 'login' }" @click="mode = 'login'">
+        <button
+          :class="{ active: mode === 'login' }"
+          @click="mode = 'login'"
+        >
           Sign In
         </button>
-        <button :class="{ active: mode === 'signup' }" @click="mode = 'signup'">
+        <button
+          :class="{ active: mode === 'signup' }"
+          @click="mode = 'signup'"
+        >
           Create Account
         </button>
       </div>
 
       <!-- Error / Success messages -->
-      <div v-if="message" :class="['auth-message', messageType]">
+      <div
+        v-if="message"
+        :class="['auth-message', messageType]"
+      >
         {{ message }}
       </div>
 
@@ -34,7 +42,7 @@
             type="email"
             placeholder="you@example.com"
             @keyup.enter="submit"
-          />
+          >
         </div>
 
         <div class="form-group">
@@ -44,27 +52,36 @@
             type="password"
             placeholder="••••••••"
             @keyup.enter="submit"
-          />
+          >
         </div>
 
-        <div v-if="mode === 'signup'" class="form-group">
+        <div
+          v-if="mode === 'signup'"
+          class="form-group"
+        >
           <label>Full Name (optional)</label>
           <input
             v-model="fullName"
             type="text"
             placeholder="Your name"
-          />
+          >
         </div>
 
-        <button class="auth-submit" :disabled="loading" @click="submit">
+        <button
+          class="auth-submit"
+          :disabled="loading"
+          @click="submit"
+        >
           {{ loading ? 'Please wait…' : mode === 'login' ? 'Sign In' : 'Create Account' }}
         </button>
 
-        <p v-if="mode === 'login'" class="auth-forgot">
+        <p
+          v-if="mode === 'login'"
+          class="auth-forgot"
+        >
           <a @click="resetPassword">Forgot password?</a>
         </p>
       </div>
-
     </div>
   </div>
 </template>
@@ -96,7 +113,6 @@ async function submit() {
     } else {
       navigateTo('/dashboard')
     }
-
   } else {
     const { error } = await supabase.auth.signUp({
       email: email.value,

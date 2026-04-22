@@ -15,7 +15,7 @@ useSeoMeta({
   title: 'Jesus Transforms Lives — Session Builder',
   description: 'Build, structure, and save your Bible study sessions from cell group outlines to full sermon notes.',
   ogTitle: 'Jesus Transforms Lives — Session Builder',
-  ogDescription: 'Build, structure, and save your Bible study sessions from cell group outlines to full sermon notes.',
+  ogDescription: 'Build, structure, and save your Bible study sessions from cell group outlines to full sermon notes.'
 })
 </script>
 

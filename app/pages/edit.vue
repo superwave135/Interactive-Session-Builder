@@ -1,21 +1,38 @@
 <template>
   <div class="builder-page">
-
     <!-- Thin top bar -->
     <div class="builder-bar">
-      <button class="btn-back" @click="goBack">← Dashboard</button>
+      <button
+        class="btn-back"
+        @click="goBack"
+      >
+        ← Dashboard
+      </button>
       <span class="builder-title">Session Builder</span>
       <div class="bar-right">
         <UColorModeButton />
-        <button class="btn-save" @click="saveSession">Save to Cloud</button>
+        <button
+          class="btn-save"
+          @click="saveSession"
+        >
+          Save to Cloud
+        </button>
       </div>
     </div>
 
     <!-- Save modal -->
-    <div v-if="showSaveModal" class="save-overlay" @click.self="showSaveModal = false">
+    <div
+      v-if="showSaveModal"
+      class="save-overlay"
+      @click.self="showSaveModal = false"
+    >
       <div class="save-modal">
-        <h3 class="save-modal-title">Save Session</h3>
-        <p class="save-modal-desc">Give this session a name so you can find it later.</p>
+        <h3 class="save-modal-title">
+          Save Session
+        </h3>
+        <p class="save-modal-desc">
+          Give this session a name so you can find it later.
+        </p>
         <input
           ref="nameInput"
           v-model="sessionNameInput"
@@ -24,10 +41,19 @@
           placeholder="e.g. Week 3 — Romans Study"
           maxlength="80"
           @keyup.enter="confirmSave"
-        />
+        >
         <div class="save-modal-actions">
-          <button class="save-btn-cancel" @click="showSaveModal = false">Cancel</button>
-          <button class="save-btn-confirm" :disabled="saving" @click="confirmSave">
+          <button
+            class="save-btn-cancel"
+            @click="showSaveModal = false"
+          >
+            Cancel
+          </button>
+          <button
+            class="save-btn-confirm"
+            :disabled="saving"
+            @click="confirmSave"
+          >
             {{ saving ? 'Saving…' : 'Save' }}
           </button>
         </div>
@@ -41,7 +67,6 @@
       class="builder-frame"
       @load="onFrameLoad"
     />
-
   </div>
 </template>
 
@@ -169,7 +194,10 @@ async function confirmSave() {
       .eq('id', sessionId)
       .eq('user_id', pendingUserId)
     saving.value = false
-    if (error) { alert('Save failed: ' + error.message); return }
+    if (error) {
+      alert('Save failed: ' + error.message)
+      return
+    }
   } else {
     const { data, error } = await supabase
       .from('sessions')
@@ -177,7 +205,10 @@ async function confirmSave() {
       .select()
       .single()
     saving.value = false
-    if (error) { alert('Save failed: ' + error.message); return }
+    if (error) {
+      alert('Save failed: ' + error.message)
+      return
+    }
     navigateTo(`/edit?session=${data.id}`, { replace: true })
   }
 

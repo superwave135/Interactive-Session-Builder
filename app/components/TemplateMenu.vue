@@ -1,9 +1,21 @@
 <template>
   <nav class="nav-tabs">
-    <NuxtLink to="/" class="nav-tab" exact-active-class="nav-tab--active">Home</NuxtLink>
+    <NuxtLink
+      to="/"
+      class="nav-tab"
+      exact-active-class="nav-tab--active"
+    >Home</NuxtLink>
     <template v-if="user">
-      <NuxtLink to="/dashboard" class="nav-tab" active-class="nav-tab--active">Dashboard</NuxtLink>
-      <NuxtLink to="/edit" class="nav-tab" active-class="nav-tab--active">Builder</NuxtLink>
+      <NuxtLink
+        to="/dashboard"
+        class="nav-tab"
+        active-class="nav-tab--active"
+      >Dashboard</NuxtLink>
+      <NuxtLink
+        to="/edit"
+        class="nav-tab"
+        active-class="nav-tab--active"
+      >Builder</NuxtLink>
     </template>
   </nav>
 </template>

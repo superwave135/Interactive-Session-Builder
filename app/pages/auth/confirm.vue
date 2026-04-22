@@ -2,13 +2,24 @@
   <div class="confirm-container">
     <UColorModeButton class="mode-toggle" />
     <div class="confirm-card">
-      <div v-if="loading" class="loading">Verifying…</div>
-      <div v-else-if="error" class="error-state">
+      <div
+        v-if="loading"
+        class="loading"
+      >
+        Verifying…
+      </div>
+      <div
+        v-else-if="error"
+        class="error-state"
+      >
         <h2>Something went wrong</h2>
         <p>{{ error }}</p>
         <a href="/login">Back to login</a>
       </div>
-      <div v-else class="success-state">
+      <div
+        v-else
+        class="success-state"
+      >
         <h2>✅ Email confirmed!</h2>
         <p>Your account is active. Redirecting you to the dashboard…</p>
       </div>

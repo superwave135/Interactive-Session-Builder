@@ -1,23 +1,36 @@
 <template>
   <div class="landing">
-
     <!-- Top nav -->
     <header class="landing-nav">
       <span class="nav-brand">✝ Jesus Transforms Lives</span>
       <div class="nav-right">
         <UColorModeButton />
         <template v-if="user">
-          <NuxtLink to="/dashboard" class="nav-dashboard">Dashboard</NuxtLink>
-          <button class="nav-signout" @click="signOut">Sign Out</button>
+          <NuxtLink
+            to="/dashboard"
+            class="nav-dashboard"
+          >Dashboard</NuxtLink>
+          <button
+            class="nav-signout"
+            @click="signOut"
+          >
+            Sign Out
+          </button>
         </template>
-        <NuxtLink v-else to="/login" class="nav-signin">Sign In</NuxtLink>
+        <NuxtLink
+          v-else
+          to="/login"
+          class="nav-signin"
+        >Sign In</NuxtLink>
       </div>
     </header>
 
     <!-- Hero -->
     <section class="hero">
       <div class="hero-inner">
-        <p class="hero-eyebrow">Bible Study Template Builder</p>
+        <p class="hero-eyebrow">
+          Bible Study Template Builder
+        </p>
         <h1 class="hero-title">
           Craft meaningful<br>
           <em>sessions with ease</em>
@@ -27,8 +40,14 @@
           to full sermon notes — all in one place.
         </p>
         <div class="hero-actions">
-          <NuxtLink to="/login" class="btn-primary">Get Started</NuxtLink>
-          <NuxtLink to="/login" class="btn-secondary">Sign In</NuxtLink>
+          <NuxtLink
+            to="/login"
+            class="btn-primary"
+          >Get Started</NuxtLink>
+          <NuxtLink
+            to="/login"
+            class="btn-secondary"
+          >Sign In</NuxtLink>
         </div>
       </div>
 
@@ -42,17 +61,23 @@
     <section class="features">
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">📖</div>
+          <div class="feature-icon">
+            📖
+          </div>
           <h3>Visual Builder</h3>
           <p>Drag-and-drop blocks for scripture, reflection questions, discussion points, and more.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">☁️</div>
+          <div class="feature-icon">
+            ☁️
+          </div>
           <h3>Cloud Saved</h3>
           <p>Your sessions are saved securely to the cloud — access and edit them from anywhere.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🖨️</div>
+          <div class="feature-icon">
+            🖨️
+          </div>
           <h3>Print Ready</h3>
           <p>Export a clean, formatted handout for your group with a single click.</p>
         </div>
@@ -63,7 +88,6 @@
     <footer class="landing-footer">
       <p>© {{ new Date().getFullYear() }} Jesus Transforms Lives · Built with love for the community</p>
     </footer>
-
   </div>
 </template>
 

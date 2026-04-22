@@ -6,25 +6,17 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase'
   ],
 
-  supabase: {
-    redirectOptions: {
-      login: '/login',
-      callback: '/auth/confirm',
-      exclude: ['/', '/login']
-    }
-  },
-
   devtools: {
     enabled: process.env.NODE_ENV === 'development'
   },
 
   css: ['~/assets/css/main.css'],
 
+  compatibilityDate: '2025-01-15',
+
   nitro: {
     preset: 'cloudflare-pages'
   },
-
-  compatibilityDate: '2025-01-15',
 
   eslint: {
     config: {
@@ -32,6 +24,14 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
+    }
+  },
+
+  supabase: {
+    redirectOptions: {
+      login: '/login',
+      callback: '/auth/confirm',
+      exclude: ['/', '/login']
     }
   }
 })
