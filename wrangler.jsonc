@@ -1,6 +1,10 @@
 {
   "name": "interactive-session-builder",
-  "pages_build_output_dir": ".output/public",
+  "main": ".output/public/_worker.js",
   "compatibility_date": "2025-01-15",
-  "compatibility_flags": ["nodejs_compat"]
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".output/public",
+    "binding": "ASSETS"
+  }
 }
