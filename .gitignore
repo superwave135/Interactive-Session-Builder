@@ -18,7 +18,6 @@ logs
 .fleet
 .idea
 git.txt
-CLAUDE.md
 
 # Lock files (project uses pnpm)
 package-lock.json
