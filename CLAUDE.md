@@ -5,15 +5,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm install       # install dependencies
-pnpm dev           # dev server at http://localhost:3000
-pnpm build         # production build
-pnpm preview       # preview production build
-pnpm lint          # ESLint
-pnpm typecheck     # vue-tsc type check
+pnpm install                  # install dependencies
+pnpm dev                      # dev server at http://localhost:3000
+pnpm build                    # production build
+pnpm preview                  # preview production build
+pnpm lint                     # ESLint check
+pnpm exec eslint . --fix      # ESLint auto-fix (resolves most errors)
+pnpm typecheck                # vue-tsc type check
 ```
 
 This project uses **pnpm** exclusively — do not use npm or yarn.
+
+**Local dev env vars:** Copy `.env.example` to `.env` and fill in real values before running `pnpm dev`. Required:
+```
+NUXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NUXT_PUBLIC_SUPABASE_KEY=your-legacy-anon-key-here
+```
+
+**ESLint rules of note:** `commaDangle: 'never'`, `braceStyle: '1tbs'`, max 1 statement per line, unused function args must be prefixed with `_` (e.g. `_to` not `to`). CI runs lint + typecheck on every push — fix all errors before pushing.
 
 ## Architecture
 
