@@ -2,7 +2,7 @@
   <div class="landing">
     <!-- Top nav -->
     <header class="landing-nav">
-      <span class="nav-brand">✝ Jesus Transforms Lives</span>
+      <span class="nav-brand">Gatherly</span>
       <div class="nav-right">
         <UColorModeButton />
         <template v-if="user">
@@ -29,7 +29,7 @@
     <section class="hero">
       <div class="hero-inner">
         <p class="hero-eyebrow">
-          Bible Study Template Builder
+          His Word, Beautifully Prepared
         </p>
         <h1 class="hero-title">
           Craft meaningful<br>
@@ -86,7 +86,7 @@
 
     <!-- Footer -->
     <footer class="landing-footer">
-      <p>© {{ new Date().getFullYear() }} Jesus Transforms Lives · Built with love for the community</p>
+      <p>© {{ new Date().getFullYear() }} Gatherly · Built with love for the community</p>
     </footer>
   </div>
 </template>

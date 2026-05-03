@@ -12,9 +12,9 @@ useHead({
 })
 
 useSeoMeta({
-  title: 'Jesus Transforms Lives — Session Builder',
+  title: 'Gatherly — Session Builder',
   description: 'Build, structure, and save your Bible study sessions from cell group outlines to full sermon notes.',
-  ogTitle: 'Jesus Transforms Lives — Session Builder',
+  ogTitle: 'Gatherly — Session Builder',
   ogDescription: 'Build, structure, and save your Bible study sessions from cell group outlines to full sermon notes.'
 })
 </script>

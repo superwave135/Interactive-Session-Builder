@@ -5,7 +5,7 @@
       <NuxtLink
         to="/"
         class="dash-brand"
-      >✝️ Jesus Transforms Lives</NuxtLink>
+      >Gatherly</NuxtLink>
       <div class="dash-user">
         <UColorModeButton />
         <span>{{ user?.email }}</span>

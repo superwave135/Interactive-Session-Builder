@@ -1,5 +1,5 @@
 <template>
-  <span class="app-logo">✝ Jesus Transforms Lives</span>
+  <span class="app-logo">Gatherly</span>
 </template>
 
 <style scoped>

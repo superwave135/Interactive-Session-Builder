@@ -5,7 +5,7 @@
     <div class="auth-card">
       <!-- Logo / Branding -->
       <div class="auth-header">
-        <h1>✝ Jesus Transforms Lives</h1>
+        <h1>Gatherly</h1>
         <p>Session Builder Portal</p>
       </div>
 
