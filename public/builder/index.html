@@ -383,96 +383,6 @@
   }
   .block:hover .block-hover-label { opacity: 1; }
 
-  /* ── PROPERTY PANEL ── */
-  .prop-panel {
-    width: 240px;
-    background: var(--parchment-dark);
-    border-left: 1px solid var(--border);
-    flex-shrink: 0;
-    overflow-y: auto;
-    transition: width 0.3s;
-  }
-  .prop-panel.empty { display: flex; align-items: center; justify-content: center; }
-  .prop-empty-msg { font-size: 12px; color: var(--ink-muted); text-align: center; padding: 24px; line-height: 1.6; }
-
-  .prop-header {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .prop-header-icon {
-    width: 26px; height: 26px; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-  }
-  .prop-header-title { font-size: 13px; font-weight: 500; }
-  .prop-body { padding: 14px 16px; }
-  .prop-field { margin-bottom: 14px; }
-  .prop-label {
-    display: block;
-    font-size: 10px; font-weight: 500;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--ink-muted);
-    margin-bottom: 5px;
-  }
-  .prop-input, .prop-textarea, .prop-select {
-    width: 100%; font-size: 12px; font-family: 'DM Sans', sans-serif;
-    padding: 7px 10px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--parchment);
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .prop-input:focus, .prop-textarea:focus, .prop-select:focus { border-color: var(--sage); }
-  .prop-textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
-  .prop-hint { font-size: 10px; color: var(--ink-muted); margin-top: 4px; line-height: 1.4; }
-
-  /* ── TAB MANAGER ── */
-  .tab-manager { display: flex; flex-direction: column; gap: 6px; }
-  .tab-row {
-    display: flex; align-items: center; gap: 6px;
-  }
-  .tab-row-num {
-    width: 18px; height: 18px; border-radius: 50%;
-    background: var(--sage); color: #fff;
-    font-size: 10px; font-weight: 500;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .tab-name-input {
-    flex: 1; font-size: 12px; font-family: 'DM Sans', sans-serif;
-    padding: 6px 8px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    background: var(--parchment);
-    color: var(--ink); outline: none;
-    transition: border-color 0.15s;
-  }
-  .tab-name-input:focus { border-color: var(--sage); }
-  .tab-remove-btn {
-    width: 22px; height: 22px; border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--parchment); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; color: var(--ink-muted);
-    flex-shrink: 0; transition: all 0.13s;
-  }
-  .tab-remove-btn:hover { background: var(--terracotta-light); border-color: var(--terracotta); color: var(--terracotta); }
-  .tab-remove-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  .tab-add-btn {
-    width: 100%; margin-top: 4px;
-    padding: 7px; border-radius: 8px;
-    border: 1.5px dashed var(--border-dark);
-    background: transparent; cursor: pointer;
-    font-size: 12px; color: var(--ink-muted);
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s; display: flex;
-    align-items: center; justify-content: center; gap: 5px;
-  }
-  .tab-add-btn:hover { border-color: var(--sage); color: var(--sage); background: var(--sage-light); }
-
   /* ── RENDERED COMPONENTS ── */
 
   /* TAB GROUP */
@@ -1024,7 +934,6 @@
 
   @media (max-width: 640px) {
     .sidebar { display: none; }
-    .prop-panel { display: none; }
 
     /* Topbar */
     .topbar {
@@ -1193,11 +1102,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- PROPERTY PANEL -->
-    <div class="prop-panel empty" id="propPanel">
-      <div class="prop-empty-msg">Select a component to edit its properties</div>
     </div>
 
   </div><!-- /builder mode -->
@@ -1883,7 +1787,6 @@ function renameTab(id, idx, value) {
   const tabs = splitTabs(block.props.labels);
   tabs[idx] = (value || '').replace(/\n/g, '').trim() || 'Tab';
   block.props.labels = tabs.join(',');
-  if (selectedId === id) renderProps();
 }
 
 function addTab(id, e) {
@@ -1899,7 +1802,6 @@ function addTab(id, e) {
   block.props.contents = contents;
   block.props.activeTab = tabs.length - 1;
   renderCanvas();
-  if (selectedId === id) renderProps();
   // Focus the new contenteditable tab name div and select all text
   setTimeout(() => {
     const zone = document.getElementById('dropZone');
@@ -1930,7 +1832,6 @@ function removeTab(id, idx, e) {
   block.props.contents = contents;
   if (block.props.activeTab >= tabs.length) block.props.activeTab = tabs.length - 1;
   renderCanvas();
-  if (selectedId === id) renderProps();
 }
 
 function saveAnswer(id, value) {
@@ -2111,13 +2012,10 @@ function selectBlock(id) {
   if (selectedId === id) return; // already selected — don't re-render and kill focus
   selectedId = id;
   renderCanvas();
-  renderProps();
 }
 function deselectAll() {
   selectedId = null;
   renderCanvas();
-  document.getElementById('propPanel').innerHTML = '<div class="prop-empty-msg">Select a component to edit its properties</div>';
-  document.getElementById('propPanel').classList.add('empty');
 }
 
 // ── MOVE / DUPLICATE / DELETE ──
@@ -2152,173 +2050,6 @@ function deleteBlock(id, e) {
   showToast('Removed');
 }
 
-// ── PROPERTY PANEL ──
-function renderProps() {
-  const block = blocks.find(b => b.id === selectedId);
-  const panel = document.getElementById('propPanel');
-  if (!block) {
-    panel.classList.add('empty');
-    panel.innerHTML = '<div class="prop-empty-msg">Select a component to edit its properties</div>';
-    return;
-  }
-  panel.classList.remove('empty');
-  const info = typeInfo[block.type];
-  const p = block.props;
-
-  const fields = propFields(block);
-  panel.innerHTML = `
-    <div class="prop-header">
-      <div class="prop-header-icon ${info.cls}" style="font-size:12px;">${info.icon}</div>
-      <div class="prop-header-title">${info.label}</div>
-    </div>
-    <div class="prop-body">${fields}</div>
-  `;
-
-  panel.querySelectorAll('[data-key]').forEach(input => {
-    input.addEventListener('input', e => {
-      const key = e.target.dataset.key;
-      let val = e.target.value;
-      if (e.target.type === 'number') val = parseInt(val) || 1;
-      block.props[key] = val;
-      renderCanvas();
-    });
-  });
-
-  // ── TAB MANAGER WIRING ──
-  if (block.type === 'tabs') {
-    const manager = panel.querySelector(`#tabManager_${block.id}`);
-    if (!manager) return;
-
-    function getTabsFromManager() {
-      return [...manager.querySelectorAll('[data-tab-name]')].map(i => i.value.trim() || 'Tab');
-    }
-
-    // Rename tab
-    manager.querySelectorAll('[data-tab-name]').forEach(input => {
-      input.addEventListener('input', () => {
-        block.props.labels = getTabsFromManager().join(',');
-        renderCanvas();
-      });
-    });
-
-    // Remove tab
-    manager.querySelectorAll('[data-tab-remove]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.dataset.tabRemove);
-        const tabs = getTabsFromManager();
-        if (tabs.length <= 1) return;
-        tabs.splice(idx, 1);
-        block.props.labels = tabs.join(',');
-        // keep contents in sync
-        const contents = block.props.contents || [];
-        contents.splice(idx, 1);
-        block.props.contents = contents;
-        if (block.props.activeTab >= tabs.length) block.props.activeTab = tabs.length - 1;
-        renderCanvas();
-        renderProps();
-      });
-    });
-
-    // Add tab
-    const addBtn = panel.querySelector(`#tabAddBtn_${block.id}`);
-    if (addBtn) {
-      addBtn.addEventListener('click', () => {
-        const tabs = getTabsFromManager();
-        tabs.push('New Tab');
-        block.props.labels = tabs.join(',');
-        // keep contents in sync
-        const contents = block.props.contents || [];
-        contents.push('');
-        block.props.contents = contents;
-        block.props.activeTab = tabs.length - 1;
-        renderCanvas();
-        renderProps();
-        setTimeout(() => {
-          const inputs = panel.querySelectorAll('[data-tab-name]');
-          if (inputs.length) inputs[inputs.length - 1].select();
-        }, 30);
-      });
-    }
-  }
-} // end renderProps
-
-function propFields(block) {
-  const p = block.props;
-  const field = (key, label, type, hint) => {
-    const val = p[key] != null ? p[key] : '';
-    if (type === 'textarea') {
-      return `<div class="prop-field">
-        <label class="prop-label">${label}</label>
-        <textarea class="prop-textarea" data-key="${key}">${val}</textarea>
-        ${hint ? `<div class="prop-hint">${hint}</div>` : ''}
-      </div>`;
-    }
-    if (type === 'number') {
-      return `<div class="prop-field">
-        <label class="prop-label">${label}</label>
-        <input class="prop-input" type="number" min="1" max="120" data-key="${key}" value="${val}">
-        ${hint ? `<div class="prop-hint">${hint}</div>` : ''}
-      </div>`;
-    }
-    return `<div class="prop-field">
-      <label class="prop-label">${label}</label>
-      <input class="prop-input" type="text" data-key="${key}" value="${val}">
-      ${hint ? `<div class="prop-hint">${hint}</div>` : ''}
-    </div>`;
-  };
-
-  switch (block.type) {
-    case 'cellgroup':
-      return field('name', 'Cell Group Name', 'text') +
-             field('subtitle', 'Subtitle (optional)', 'text');
-    case 'tabs': {
-      const tabs = splitTabs(p.labels);
-      const rows = tabs.map((t, i) => `
-        <div class="tab-row" data-tab-idx="${i}">
-          <div class="tab-row-num">${i + 1}</div>
-          <input class="tab-name-input" type="text" value="${t.replace(/"/g,'&quot;')}" data-tab-name="${i}" placeholder="Tab name">
-          <button class="tab-remove-btn" data-tab-remove="${i}" title="Remove tab" ${tabs.length <= 1 ? 'disabled' : ''}>×</button>
-        </div>`).join('');
-      return `<div class="prop-field">
-        <label class="prop-label">Tabs</label>
-        <div class="tab-manager" id="tabManager_${block.id}">
-          ${rows}
-          <button class="tab-add-btn" id="tabAddBtn_${block.id}">＋ Add tab</button>
-        </div>
-      </div>`;
-    }
-    case 'heading':
-      return field('text', 'Heading Text', 'text') + field('subtitle', 'Subtitle (optional)', 'text');
-    case 'divider':
-      return field('symbol', 'Centre Symbol', 'text', 'E.g. ✦  ✝  •  —');
-    case 'scripture':
-      return field('ref', 'Reference', 'text', 'E.g. John 3:16') + field('text', 'Verse Text', 'textarea');
-    case 'note':
-      return field('text', 'Note Content', 'textarea', 'Visible only when in Leader mode');
-    case 'question':
-      return field('question', 'Question Text', 'textarea') +
-             field('placeholder', 'Answer Placeholder', 'text') +
-             field('number', 'Question Number', 'text');
-    case 'poll':
-      return field('question', 'Poll Question', 'text') +
-             field('options', 'Options', 'textarea', 'Comma-separated. Each on new line or separated by commas.');
-    case 'timer':
-      return field('label', 'Label', 'text') + field('minutes', 'Duration (minutes)', 'number');
-    case 'image':
-      return field('caption', 'Caption (optional)', 'text') +
-             `<div class="prop-field">
-               <label class="prop-label">Alignment</label>
-               <select class="prop-input" data-key="align">
-                 <option value="center" ${p.align==='center'?'selected':''}>Centre</option>
-                 <option value="left"   ${p.align==='left'  ?'selected':''}>Left</option>
-                 <option value="right"  ${p.align==='right' ?'selected':''}>Right</option>
-               </select>
-             </div>`;
-    case 'video':
-      return field('caption', 'Caption (optional)', 'text');
-    default: return '';
-  }
-}
 
 // ── IMAGE HELPERS ──
 let _pendingImageBlockId = null;
