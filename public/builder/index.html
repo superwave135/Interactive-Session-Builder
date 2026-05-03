@@ -968,6 +968,12 @@
     /* Property panel hidden, prop inputs not needed */
     .r-timer-controls { flex-wrap: wrap; gap: 6px; }
   }
+
+  /* Mobile landscape: small height is the reliable signal */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .canvas-inner { max-width: 90%; }
+    .canvas-wrap { padding: 16px 12px; }
+  }
 </style>
 </head>
 <body>
