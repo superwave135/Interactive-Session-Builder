@@ -11,6 +11,46 @@
       <span class="builder-title">Session Builder</span>
       <div class="bar-right">
         <UColorModeButton />
+        <div class="bar-mode-group">
+          <button
+            :class="['bar-mode-btn', { active: currentMode === 'build' }]"
+            @click="setMode('build')"
+          >
+            Build
+          </button>
+          <button
+            :class="['bar-mode-btn', { active: currentMode === 'member' }]"
+            @click="setMode('member')"
+          >
+            View
+          </button>
+          <button
+            class="bar-mode-btn bar-mode-present"
+            @click="triggerPresent"
+          >
+            Present
+          </button>
+        </div>
+        <div class="bar-mode-group bar-file-group">
+          <button
+            class="bar-mode-btn"
+            @click="triggerUpload"
+          >
+            Upload
+          </button>
+          <button
+            class="bar-mode-btn"
+            @click="triggerDownload"
+          >
+            Download
+          </button>
+          <button
+            class="bar-mode-btn bar-mode-save"
+            @click="saveSession"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </div>
 
@@ -154,6 +194,22 @@ function onIframeMessage(e) {
 onMounted(() => window.addEventListener('message', onIframeMessage))
 onUnmounted(() => window.removeEventListener('message', onIframeMessage))
 
+const currentMode = ref('build')
+
+function setMode(mode) {
+  currentMode.value = mode
+  builderFrame.value?.contentWindow?.switchMode(mode)
+}
+function triggerPresent() {
+  builderFrame.value?.contentWindow?.openPresentation()
+}
+function triggerUpload() {
+  builderFrame.value?.contentWindow?.loadFromFile()
+}
+function triggerDownload() {
+  builderFrame.value?.contentWindow?.saveTemplate()
+}
+
 function goBack() {
   navigateTo('/dashboard')
 }
@@ -232,11 +288,16 @@ async function confirmSave() {
   color: var(--ink);
   flex-shrink: 0;
   border-bottom: 1px solid var(--border);
+  position: relative;
 }
 .builder-title {
   font-family: 'Kaushan Script', cursive;
   font-size: 1.3rem;
   color: var(--gold);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 .btn-back {
   background: none;
@@ -258,6 +319,34 @@ async function confirmSave() {
   align-items: center;
   gap: 0.6rem;
 }
+.bar-mode-group {
+  display: flex;
+  background: var(--parchment);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--border);
+}
+.bar-mode-btn {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-muted);
+  background: transparent;
+  transition: all 0.18s;
+}
+.bar-mode-btn.active { background: var(--gold); color: var(--ink); }
+.bar-mode-present { background: var(--sage) !important; color: #fff !important; }
+.bar-mode-present:hover { filter: brightness(0.9); }
+.bar-file-group { gap: 0; padding: 2px; }
+.bar-file-group .bar-mode-btn { padding: 5px 10px; border-radius: 0; }
+.bar-file-group .bar-mode-btn:first-child { border-radius: 5px 0 0 5px; }
+.bar-file-group .bar-mode-btn:last-child { border-radius: 0 5px 5px 0; }
+.bar-mode-save { background: var(--sage-mid) !important; color: var(--ink) !important; }
+.bar-mode-save:hover { filter: brightness(0.9); }
 .btn-save {
   background: none;
   border: 1.5px solid var(--border-dark);

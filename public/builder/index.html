@@ -95,6 +95,10 @@
     gap: 2px;
     border: 1px solid var(--border);
   }
+  .topbar-mode-compact { gap: 0; padding: 2px; }
+  .topbar-mode-compact .mode-btn { padding: 5px 10px; border-radius: 0; }
+  .topbar-mode-compact .mode-btn:first-child { border-radius: 5px 0 0 5px; }
+  .topbar-mode-compact .mode-btn:last-child { border-radius: 0 5px 5px 0; }
   .mode-btn {
     font-size: 12px; font-weight: 500;
     padding: 5px 14px; border-radius: 6px;
@@ -111,18 +115,11 @@
     color: #fff !important;
   }
   .mode-btn-present:hover { filter: brightness(0.9); }
-  .topbar-file-group {
-    display: flex;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
+  .mode-btn-save {
+    background: var(--sage-mid) !important;
+    color: var(--ink) !important;
   }
-  .topbar-file-group .btn-topbar {
-    border-radius: 0;
-    border: none;
-    border-right: 1px solid var(--border);
-  }
-  .topbar-file-group .btn-topbar:last-child { border-right: none; }
+  .mode-btn-save:hover { filter: brightness(0.9); }
 
   /* ── PRESENTATION / TV MODE ── */
   .present-overlay {
@@ -1012,26 +1009,6 @@
 <div class="app" id="app">
 
   <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-brand">
-      <div class="topbar-logo">✦</div>
-      <div class="topbar-name">Gatherly</div>
-      <div class="topbar-tagline">His Word, Beautifully Prepared</div>
-    </div>
-    <div class="topbar-actions">
-      <div class="topbar-mode">
-        <button class="mode-btn active" id="btnBuild" onclick="switchMode('build')">Build</button>
-        <button class="mode-btn" id="btnMember" onclick="switchMode('member')">View</button>
-        <button class="mode-btn mode-btn-present" onclick="openPresentation()">Present</button>
-      </div>
-      <div class="topbar-file-group">
-        <button class="btn-topbar" onclick="loadFromFile()" title="Upload a previously saved template">Upload</button>
-        <button class="btn-topbar" onclick="saveTemplate()" title="Download your template as an HTML file">Download</button>
-        <button class="btn-topbar btn-save" onclick="window.parent.postMessage('save-session','*')" title="Save to cloud">Save Session</button>
-      </div>
-    </div>
-  </div>
-
   <!-- BUILDER MODE -->
   <div class="main" id="builderMode">
 
@@ -2219,8 +2196,8 @@ function splitTabs(str) {
 
 // ── MODES ──
 function switchMode(mode) {
-  document.getElementById('btnBuild').classList.toggle('active', mode === 'build');
-  document.getElementById('btnMember').classList.toggle('active', mode === 'member');
+  document.getElementById('btnBuild')?.classList.toggle('active', mode === 'build');
+  document.getElementById('btnMember')?.classList.toggle('active', mode === 'member');
   document.getElementById('builderMode').style.display = mode === 'build' ? 'flex' : 'none';
   const mv = document.getElementById('memberMode');
   mv.style.display = mode === 'member' ? 'flex' : 'none';
