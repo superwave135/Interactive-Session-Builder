@@ -63,7 +63,7 @@
     border-bottom: 1px solid var(--border);
   }
   .topbar-brand {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 10px;
   }
   .topbar-logo {
     width: 32px; height: 32px;
@@ -106,16 +106,23 @@
     background: var(--gold);
     color: var(--ink);
   }
-  .btn-present {
-    font-size: 12px; font-weight: 500;
-    padding: 7px 16px; border-radius: 8px;
-    border: 1.5px solid var(--sage);
-    cursor: pointer;
-    background: var(--sage);
-    color: #fff;
-    transition: all 0.18s;
+  .mode-btn-present {
+    background: var(--sage) !important;
+    color: #fff !important;
   }
-  .btn-present:hover { background: var(--sage-mid); border-color: var(--sage-mid); color: var(--ink); }
+  .mode-btn-present:hover { filter: brightness(0.9); }
+  .topbar-file-group {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .topbar-file-group .btn-topbar {
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid var(--border);
+  }
+  .topbar-file-group .btn-topbar:last-child { border-right: none; }
 
   /* ── PRESENTATION / TV MODE ── */
   .present-overlay {
@@ -1008,19 +1015,20 @@
   <div class="topbar">
     <div class="topbar-brand">
       <div class="topbar-logo">✦</div>
-      <div>
-        <div class="topbar-name">Gatherly</div>
-        <div class="topbar-tagline">His Word, Beautifully Prepared</div>
-      </div>
+      <div class="topbar-name">Gatherly</div>
+      <div class="topbar-tagline">His Word, Beautifully Prepared</div>
     </div>
     <div class="topbar-actions">
       <div class="topbar-mode">
         <button class="mode-btn active" id="btnBuild" onclick="switchMode('build')">Build</button>
         <button class="mode-btn" id="btnMember" onclick="switchMode('member')">View</button>
+        <button class="mode-btn mode-btn-present" onclick="openPresentation()">Present</button>
       </div>
-      <button class="btn-topbar" onclick="loadFromFile()" title="Upload a previously saved template">⬆ Upload</button>
-      <button class="btn-topbar" onclick="saveTemplate()" title="Download your template as an HTML file">⬇ Download</button>
-      <button class="btn-present" onclick="openPresentation()">⛶ Present</button>
+      <div class="topbar-file-group">
+        <button class="btn-topbar" onclick="loadFromFile()" title="Upload a previously saved template">Upload</button>
+        <button class="btn-topbar" onclick="saveTemplate()" title="Download your template as an HTML file">Download</button>
+        <button class="btn-topbar btn-save" onclick="window.parent.postMessage('save-session','*')" title="Save to cloud">Save Session</button>
+      </div>
     </div>
   </div>
 

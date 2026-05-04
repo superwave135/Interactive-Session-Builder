@@ -11,12 +11,6 @@
       <span class="builder-title">Session Builder</span>
       <div class="bar-right">
         <UColorModeButton />
-        <button
-          class="btn-save"
-          @click="saveSession"
-        >
-          Save to Cloud
-        </button>
       </div>
     </div>
 
@@ -153,6 +147,12 @@ async function onFrameLoad() {
 watch(() => colorMode.value, () => {
   applyThemeToIframe()
 })
+
+function onIframeMessage(e) {
+  if (e.data === 'save-session') saveSession()
+}
+onMounted(() => window.addEventListener('message', onIframeMessage))
+onUnmounted(() => window.removeEventListener('message', onIframeMessage))
 
 function goBack() {
   navigateTo('/dashboard')

@@ -38,10 +38,10 @@
           <span>✦</span>
         </div>
         <h2 class="hero-title">
-          Craft meaningful sessions with ease
+          Build with ease, share with love
         </h2>
         <p class="hero-desc">
-          Build and share with your creativity — from outlines to full discussion notes
+          From crafting outlines to writing discussion notes
         </p>
         <div class="hero-actions">
           <NuxtLink
