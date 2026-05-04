@@ -197,7 +197,9 @@ const currentMode = ref('build')
 
 function setMode(mode) {
   currentMode.value = mode
-  builderFrame.value?.contentWindow?.switchMode(mode)
+  const win = builderFrame.value?.contentWindow
+  win?.closePresentation?.()
+  win?.switchMode(mode)
 }
 function triggerPresent() {
   builderFrame.value?.contentWindow?.openPresentation()
