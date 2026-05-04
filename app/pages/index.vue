@@ -1,36 +1,66 @@
 <template>
   <div class="landing">
-
     <!-- Nav -->
     <header class="landing-nav">
       <span class="nav-brand">Gatherly</span>
       <div class="nav-right">
         <UColorModeButton />
         <template v-if="user">
-          <NuxtLink to="/dashboard" class="nav-dashboard">Dashboard</NuxtLink>
-          <button class="nav-signout" @click="signOut">Sign Out</button>
+          <NuxtLink
+            to="/dashboard"
+            class="nav-dashboard"
+          >Dashboard</NuxtLink>
+          <button
+            class="nav-signout"
+            @click="signOut"
+          >
+            Sign Out
+          </button>
         </template>
-        <NuxtLink v-else to="/login" class="nav-signin">Sign In</NuxtLink>
+        <NuxtLink
+          v-else
+          to="/login"
+          class="nav-signin"
+        >Sign In</NuxtLink>
       </div>
     </header>
 
     <!-- Hero -->
     <section class="hero">
       <div class="hero-content">
-        <p class="hero-tagline">His Word, Beautifully Prepared</p>
-        <h1 class="hero-brand">Gatherly</h1>
-        <div class="hero-divider"><span>✦</span></div>
-        <h2 class="hero-title">Craft meaningful sessions with ease</h2>
+        <p class="hero-tagline">
+          His Word, Beautifully Prepared
+        </p>
+        <h1 class="hero-brand">
+          Gatherly
+        </h1>
+        <div class="hero-divider">
+          <span>✦</span>
+        </div>
+        <h2 class="hero-title">
+          Craft meaningful sessions with ease
+        </h2>
         <p class="hero-desc">
           Build and share with your creativity — from outlines to full discussion notes
         </p>
         <div class="hero-actions">
-          <NuxtLink to="/login" class="btn-primary">Get Started Free</NuxtLink>
-          <NuxtLink to="/login" class="btn-ghost">Sign In</NuxtLink>
+          <NuxtLink
+            to="/login"
+            class="btn-primary"
+          >Get Started Free</NuxtLink>
+          <NuxtLink
+            to="/login"
+            class="btn-ghost"
+          >Sign In</NuxtLink>
         </div>
       </div>
 
-      <div class="hero-scroll-hint" aria-hidden="true">↓</div>
+      <div
+        class="hero-scroll-hint"
+        aria-hidden="true"
+      >
+        ↓
+      </div>
     </section>
 
     <!-- Scripture strip -->
@@ -40,7 +70,9 @@
 
     <!-- Features -->
     <section class="features">
-      <p class="features-label">Everything you need</p>
+      <p class="features-label">
+        Everything you need
+      </p>
       <div class="features-grid">
         <div class="feature-card">
           <h3>Visual Builder</h3>
@@ -61,7 +93,6 @@
     <footer class="landing-footer">
       <p>© {{ new Date().getFullYear() }} Gatherly · Built with love for the community</p>
     </footer>
-
   </div>
 </template>
 
