@@ -257,19 +257,7 @@
     margin: 0 auto;
   }
 
-  .canvas-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
-    margin-bottom: 16px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .canvas-label::after {
-    content: ''; flex: 1;
-    height: 1px; background: var(--border);
-  }
+
 
   .drop-zone {
     min-height: 480px;
@@ -1109,7 +1097,6 @@
     <!-- CANVAS -->
     <div class="canvas-wrap" id="canvasWrap">
       <div class="canvas-inner">
-        <div class="canvas-label">Template Canvas</div>
         <div class="drop-zone" id="dropZone" onclick="deselectAll()">
           <div class="drop-empty" id="dropEmpty">
             <div class="drop-empty-cross">✦</div>

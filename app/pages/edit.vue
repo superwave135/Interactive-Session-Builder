@@ -8,7 +8,6 @@
       >
         ← Dashboard
       </button>
-      <span class="builder-title">Session Builder</span>
       <div class="bar-right">
         <UColorModeButton />
         <div class="bar-mode-group">
@@ -289,15 +288,6 @@ async function confirmSave() {
   flex-shrink: 0;
   border-bottom: 1px solid var(--border);
   position: relative;
-}
-.builder-title {
-  font-family: 'Kaushan Script', cursive;
-  font-size: 1.3rem;
-  color: var(--gold);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
 }
 .btn-back {
   background: none;
