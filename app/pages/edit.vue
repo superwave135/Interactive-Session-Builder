@@ -282,7 +282,7 @@ async function confirmSave() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 1.25rem;
+  padding: 0.35rem 1rem;
   background: var(--parchment-dark);
   color: var(--ink);
   flex-shrink: 0;
@@ -293,10 +293,10 @@ async function confirmSave() {
   background: none;
   border: 1.5px solid var(--border-dark);
   color: var(--ink-soft);
-  padding: 0.4rem 0.9rem;
+  padding: 0.25rem 0.65rem;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   transition: all 0.2s;
 }
 .btn-back:hover {
@@ -307,21 +307,21 @@ async function confirmSave() {
 .bar-right {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.4rem;
 }
 .bar-mode-group {
   display: flex;
   background: var(--parchment);
-  border-radius: 8px;
-  padding: 3px;
-  gap: 2px;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 1px;
   border: 1px solid var(--border);
 }
 .bar-mode-btn {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
-  padding: 5px 14px;
-  border-radius: 6px;
+  padding: 3px 10px;
+  border-radius: 5px;
   border: none;
   cursor: pointer;
   color: var(--ink-muted);
@@ -332,9 +332,9 @@ async function confirmSave() {
 .bar-mode-present { background: var(--sage) !important; color: #fff !important; }
 .bar-mode-present:hover { filter: brightness(0.9); }
 .bar-file-group { gap: 0; padding: 2px; }
-.bar-file-group .bar-mode-btn { padding: 5px 10px; border-radius: 0; }
-.bar-file-group .bar-mode-btn:first-child { border-radius: 5px 0 0 5px; }
-.bar-file-group .bar-mode-btn:last-child { border-radius: 0 5px 5px 0; }
+.bar-file-group .bar-mode-btn { padding: 3px 8px; border-radius: 0; }
+.bar-file-group .bar-mode-btn:first-child { border-radius: 4px 0 0 4px; }
+.bar-file-group .bar-mode-btn:last-child { border-radius: 0 4px 4px 0; }
 .bar-mode-save { background: var(--sage-mid) !important; color: var(--ink) !important; }
 .bar-mode-save:hover { filter: brightness(0.9); }
 .btn-save {
