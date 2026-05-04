@@ -185,10 +185,9 @@ async function signOut() {
   border-bottom: 1px solid var(--border);
 }
 .dash-brand {
-  font-family: 'Lora', serif;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--ink);
+  font-family: 'Kaushan Script', cursive;
+  font-size: 1.5rem;
+  color: var(--gold);
   text-decoration: none;
   transition: color 0.15s;
 }

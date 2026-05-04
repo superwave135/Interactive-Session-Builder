@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gatherly — His Word, Beautifully Prepared</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --parchment: #f7f2ea;
@@ -75,15 +75,16 @@
     color: var(--ink);
   }
   .topbar-name {
-    font-family: 'Lora', serif;
-    font-size: 18px;
-    letter-spacing: 0.03em;
-    color: var(--ink);
+    font-family: 'Kaushan Script', cursive;
+    font-size: 22px;
+    letter-spacing: 0.01em;
+    color: var(--gold);
   }
   .topbar-tagline {
-    font-size: 11px;
+    font-family: 'Kaushan Script', cursive;
+    font-size: 14px;
     color: var(--ink-muted);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.01em;
   }
   .topbar-actions { display: flex; gap: 8px; align-items: center; }
   .topbar-mode {
@@ -825,6 +826,29 @@
     letter-spacing: 0.05em;
     font-variant-numeric: tabular-nums;
   }
+  .r-timer-dur-wrap { display: flex; align-items: baseline; gap: 2px; }
+  .r-timer-dur-input {
+    font-family: 'Lora', serif;
+    font-size: 32px; font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+    width: 2.2ch;
+    border: none; border-bottom: 2px solid var(--gold-soft);
+    background: transparent; outline: none;
+    padding: 0; text-align: center;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .r-timer-dur-input:focus { border-bottom-color: var(--gold); }
+  .r-timer-dur-input::-webkit-outer-spin-button,
+  .r-timer-dur-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .r-timer-colon {
+    font-family: 'Lora', serif;
+    font-size: 32px; font-weight: 600;
+    color: var(--gold); line-height: 1;
+    padding: 0 1px;
+  }
   .r-timer-controls { display: flex; gap: 8px; align-items: center; }
   .r-timer-btn {
     padding: 7px 16px; border-radius: 8px;
@@ -945,7 +969,7 @@
     }
     .topbar-tagline { display: none; }
     .topbar-logo { width: 26px; height: 26px; font-size: 14px; }
-    .topbar-name { font-size: 14px; }
+    .topbar-name { font-size: 17px; }
     .topbar-brand { gap: 8px; }
     .topbar-actions { gap: 4px; flex-wrap: wrap; }
     .topbar-mode { padding: 2px; }
@@ -1204,7 +1228,7 @@ function defaultProps(type) {
     note:     { label: '', text: '' },
     question: { question: '', placeholder: 'Share your thoughts here ...', number: qCount + 1 },
     poll:     { question: '', options: 'Option 1,Option 2,Option 3' },
-    timer:    { minutes: 5, label: 'Discussion Time' },
+    timer:    { minutes: 5, seconds: 0, label: 'Discussion Time' },
     image:    { src: '', caption: '', align: 'center' },
     video:    { url: '', caption: '' },
   };
@@ -1389,7 +1413,7 @@ function renderCanvas() {
 }
 
 // ── RENDER BLOCK INNER (BUILDER) ──
-function renderBlockInner(block, viewMode = false) {
+function renderBlockInner(block, viewMode = false, viewSuffix = 'view') {
   const p = block.props;
   switch (block.type) {
     case 'cellgroup':
@@ -1705,7 +1729,7 @@ function renderBlockInner(block, viewMode = false) {
     }
 
     case 'timer':
-      return renderTimerBlock(block, viewMode ? 'view' : 'build');
+      return renderTimerBlock(block, viewMode ? viewSuffix : 'build');
     default: return '';
   }
 }
@@ -1713,28 +1737,40 @@ function renderBlockInner(block, viewMode = false) {
 function renderTimerBlock(block, viewSuffix = 'build') {
   const p = block.props;
   const mins = parseInt(p.minutes) || 5;
-  const ts = timerStates[block.id] || { remaining: mins * 60, running: false };
+  const secs = Math.min(59, Math.max(0, parseInt(p.seconds) || 0));
+  const totalSecs = mins * 60 + secs;
+  const ts = timerStates[block.id] || { remaining: totalSecs, running: false };
   timerStates[block.id] = ts;
   const m = Math.floor(ts.remaining / 60);
   const s = ts.remaining % 60;
   const display = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  const total = mins * 60;
-  const pct = total > 0 ? ts.remaining / total : 1;
+  const pct = totalSecs > 0 ? ts.remaining / totalSecs : 1;
   const circ = 2 * Math.PI * 22;
   const offset = circ * (1 - pct);
   const dispId = `timerDisp_${block.id}_${viewSuffix}`;
   const btnId  = `timerBtn_${block.id}_${viewSuffix}`;
   const ringId = `timerRing_${block.id}_${viewSuffix}`;
+  const durInputs = viewSuffix === 'build'
+    ? `<div class="r-timer-dur-wrap">
+        <input class="r-timer-dur-input" type="number" min="0" max="99" value="${mins}"
+          onclick="event.stopPropagation()"
+          onchange="setTimerMins('${block.id}',this.value,event)">
+        <span class="r-timer-colon">:</span>
+        <input class="r-timer-dur-input" type="number" min="0" max="59" value="${String(secs).padStart(2,'0')}"
+          onclick="event.stopPropagation()"
+          onchange="setTimerSecs('${block.id}',this.value,event)">
+       </div>` : '';
   return `<div class="r-timer">
     <div class="r-timer-left" style="flex:1;">
       <div class="r-timer-label">${p.label || 'Discussion Time'}</div>
       <div class="r-timer-display" id="${dispId}">${display}</div>
     </div>
     <div class="r-timer-controls">
+      ${durInputs}
       <button class="r-timer-btn ${ts.running ? 'pause' : 'start'}" id="${btnId}"
-        onclick="toggleTimer('${block.id}',${mins},event)">${ts.running ? 'Pause' : 'Start'}</button>
+        onclick="toggleTimer('${block.id}',${totalSecs},event)">${ts.running ? 'Pause' : (ts.remaining > 0 && ts.remaining < totalSecs ? 'Resume' : 'Start')}</button>
       <button class="r-timer-btn reset"
-        onclick="resetTimer('${block.id}',${mins},event)">Reset</button>
+        onclick="resetTimer('${block.id}',${totalSecs},event)">Reset</button>
     </div>
     <svg class="r-timer-ring" viewBox="0 0 50 50">
       <circle class="r-timer-ring-track" cx="25" cy="25" r="22" fill="none" stroke-width="3"/>
@@ -1953,18 +1989,18 @@ function choosePoll(el) {
 
 // ── TIMER ──
 let timerIntervals = {};
-function toggleTimer(id, defaultMins, e) {
+function toggleTimer(id, totalSecs, e) {
   if (e) e.stopPropagation();
-  const ts = timerStates[id] || { remaining: defaultMins * 60, running: false };
+  const ts = timerStates[id] || { remaining: totalSecs, running: false };
   if (ts.running) {
     clearInterval(timerIntervals[id]);
     ts.running = false;
   } else {
-    if (ts.remaining <= 0) { resetTimer(id, defaultMins, e); return; }
+    if (ts.remaining <= 0) { resetTimer(id, totalSecs, e); return; }
     ts.running = true;
     timerIntervals[id] = setInterval(() => {
       ts.remaining = Math.max(0, ts.remaining - 1);
-      updateTimerDisplay(id, defaultMins);
+      updateTimerDisplay(id, totalSecs);
       if (ts.remaining <= 0) {
         clearInterval(timerIntervals[id]);
         ts.running = false;
@@ -1973,28 +2009,47 @@ function toggleTimer(id, defaultMins, e) {
       }
     }, 1000);
   }
-  updateTimerDisplay(id, defaultMins);
+  updateTimerDisplay(id, totalSecs);
   updateTimerBtnState(id, ts.running);
 }
-function resetTimer(id, defaultMins, e) {
+function resetTimer(id, totalSecs, e) {
   if (e) e.stopPropagation();
   clearInterval(timerIntervals[id]);
   const ts = timerStates[id] || {};
-  ts.remaining = defaultMins * 60;
+  ts.remaining = totalSecs;
   ts.running = false;
   timerStates[id] = ts;
-  updateTimerDisplay(id, defaultMins);
+  updateTimerDisplay(id, totalSecs);
   updateTimerBtnState(id, false);
 }
-function updateTimerDisplay(id, totalMins) {
+function setTimerMins(id, value, e) {
+  if (e) e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  block.props.minutes = Math.max(0, Math.min(99, parseInt(value) || 0));
+  const total = block.props.minutes * 60 + (parseInt(block.props.seconds) || 0);
+  clearInterval(timerIntervals[id]);
+  timerStates[id] = { remaining: total, running: false };
+  renderCanvas();
+}
+function setTimerSecs(id, value, e) {
+  if (e) e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  block.props.seconds = Math.max(0, Math.min(59, parseInt(value) || 0));
+  const total = (parseInt(block.props.minutes) || 0) * 60 + block.props.seconds;
+  clearInterval(timerIntervals[id]);
+  timerStates[id] = { remaining: total, running: false };
+  renderCanvas();
+}
+function updateTimerDisplay(id, totalSecs) {
   const ts = timerStates[id];
   if (!ts) return;
   const m = Math.floor(ts.remaining / 60), s = ts.remaining % 60;
   const text = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  const totalSecs = totalMins * 60;
   const p = totalSecs > 0 ? ts.remaining / totalSecs : 1;
   const circ = 2 * Math.PI * 22;
-  ['build','view'].forEach(suffix => {
+  ['build','view','present'].forEach(suffix => {
     const disp = document.getElementById(`timerDisp_${id}_${suffix}`);
     const ring = document.getElementById(`timerRing_${id}_${suffix}`);
     if (disp) disp.textContent = text;
@@ -2005,11 +2060,16 @@ function updateTimerDisplay(id, totalMins) {
   });
 }
 function updateTimerBtnState(id, running) {
-  ['build','view'].forEach(suffix => {
+  const ts = timerStates[id];
+  const block = blocks.find(b => b.id === id);
+  const totalSecs = block ? (parseInt(block.props.minutes) || 0) * 60 + (parseInt(block.props.seconds) || 0) : 0;
+  const paused = !running && ts && ts.remaining > 0 && ts.remaining < totalSecs;
+  const label = running ? 'Pause' : (paused ? 'Resume' : 'Start');
+  ['build','view','present'].forEach(suffix => {
     const btn = document.getElementById(`timerBtn_${id}_${suffix}`);
     if (!btn) return;
     btn.className = 'r-timer-btn ' + (running ? 'pause' : 'start');
-    btn.textContent = running ? 'Pause' : 'Start';
+    btn.textContent = label;
   });
 }
 
@@ -2160,12 +2220,12 @@ function switchMode(mode) {
 }
 
 // ── RENDER FOR MEMBER / PREVIEW ──
-function renderForViewing(container) {
+function renderForViewing(container, suffix = 'view') {
   container.innerHTML = '';
   blocks.forEach(block => {
     const el = document.createElement('div');
     el.style.marginBottom = '14px';
-    el.innerHTML = renderBlockInner(block, true);
+    el.innerHTML = renderBlockInner(block, true, suffix);
     container.appendChild(el);
   });
 }
@@ -2292,7 +2352,7 @@ function minimizeTabContent() {
 // ── PRESENTATION / TV MODE ──
 function openPresentation() {
   const content = document.getElementById('presentContent');
-  renderForViewing(content);
+  renderForViewing(content, 'present');
   content.querySelectorAll('.r-poll-option').forEach(opt => {
     opt.addEventListener('click', () => {
       opt.parentElement.querySelectorAll('.r-poll-option').forEach(s => s.classList.remove('chosen'));
@@ -2339,10 +2399,10 @@ function loadSample() {
     { type: 'tabs',      props: { labels: 'Tab 1,Tab 2,Tab 3', activeTab: 0, contents: ['','',''] } },
     { type: 'question',  props: { question: '', placeholder: 'Share your thoughts here ...', number: 1 } },
     { type: 'poll',      props: { question: '', options: 'Option 1,Option 2,Option 3' } },
-    { type: 'timer',     props: { minutes: 5, label: 'Group sharing time' } },
+    { type: 'timer',     props: { minutes: 5, seconds: 0, label: 'Group sharing time' } },
   ].forEach(({ type, props }) => {
     const id = uid();
-    timerStates[id] = { remaining: (props.minutes || 5) * 60, running: false };
+    timerStates[id] = { remaining: (props.minutes || 5) * 60 + (props.seconds || 0), running: false };
     blocks.push({ id, type, props });
   });
   renderCanvas();

@@ -1,83 +1,56 @@
 <template>
   <div class="landing">
-    <!-- Top nav -->
+
+    <!-- Nav -->
     <header class="landing-nav">
       <span class="nav-brand">Gatherly</span>
       <div class="nav-right">
         <UColorModeButton />
         <template v-if="user">
-          <NuxtLink
-            to="/dashboard"
-            class="nav-dashboard"
-          >Dashboard</NuxtLink>
-          <button
-            class="nav-signout"
-            @click="signOut"
-          >
-            Sign Out
-          </button>
+          <NuxtLink to="/dashboard" class="nav-dashboard">Dashboard</NuxtLink>
+          <button class="nav-signout" @click="signOut">Sign Out</button>
         </template>
-        <NuxtLink
-          v-else
-          to="/login"
-          class="nav-signin"
-        >Sign In</NuxtLink>
+        <NuxtLink v-else to="/login" class="nav-signin">Sign In</NuxtLink>
       </div>
     </header>
 
     <!-- Hero -->
     <section class="hero">
-      <div class="hero-inner">
-        <p class="hero-eyebrow">
-          His Word, Beautifully Prepared
-        </p>
-        <h1 class="hero-title">
-          Craft meaningful<br>
-          <em>sessions with ease</em>
-        </h1>
+      <div class="hero-content">
+        <p class="hero-tagline">His Word, Beautifully Prepared</p>
+        <h1 class="hero-brand">Gatherly</h1>
+        <div class="hero-divider"><span>✦</span></div>
+        <h2 class="hero-title">Craft meaningful sessions with ease</h2>
         <p class="hero-desc">
-          Build, structure, and save your Bible Discussion Session — from cell group outlines
-          to full sermon notes — all in one place.
+          Build and share with your creativity — from outlines to full discussion notes
         </p>
         <div class="hero-actions">
-          <NuxtLink
-            to="/login"
-            class="btn-primary"
-          >Get Started</NuxtLink>
-          <NuxtLink
-            to="/login"
-            class="btn-secondary"
-          >Sign In</NuxtLink>
+          <NuxtLink to="/login" class="btn-primary">Get Started Free</NuxtLink>
+          <NuxtLink to="/login" class="btn-ghost">Sign In</NuxtLink>
         </div>
       </div>
 
-      <!-- decorative scripture strip -->
-      <div class="scripture-strip">
-        <span>"For the word of God is alive and active." — Hebrews 4:12</span>
-      </div>
+      <div class="hero-scroll-hint" aria-hidden="true">↓</div>
     </section>
 
-    <!-- Feature cards -->
+    <!-- Scripture strip -->
+    <div class="scripture-strip">
+      <span>"For the word of God is alive and active." — Hebrews 4:12</span>
+    </div>
+
+    <!-- Features -->
     <section class="features">
+      <p class="features-label">Everything you need</p>
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">
-            📖
-          </div>
           <h3>Visual Builder</h3>
           <p>Drag-and-drop blocks for scripture, reflection questions, discussion points, and more.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">
-            ☁️
-          </div>
           <h3>Cloud Saved</h3>
-          <p>Your sessions are saved securely to the cloud — access and edit them from anywhere.</p>
+          <p>Sessions are saved securely — access and edit them from any device, any time.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">
-            🖨️
-          </div>
           <h3>Print Ready</h3>
           <p>Export a clean, formatted handout for your group with a single click.</p>
         </div>
@@ -88,6 +61,7 @@
     <footer class="landing-footer">
       <p>© {{ new Date().getFullYear() }} Gatherly · Built with love for the community</p>
     </footer>
+
   </div>
 </template>
 
@@ -103,6 +77,7 @@ async function signOut() {
 </script>
 
 <style scoped>
+/* ── BASE ── */
 .landing {
   min-height: 100vh;
   display: flex;
@@ -114,20 +89,22 @@ async function signOut() {
 
 /* ── NAV ── */
 .landing-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.1rem 2rem;
-  background: var(--parchment-dark);
-  color: var(--ink);
+  padding: 0.9rem 2.5rem;
+  background: color-mix(in srgb, var(--parchment-dark) 90%, transparent);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
 .nav-brand {
-  font-family: 'Lora', serif;
-  font-size: 1rem;
-  font-weight: 600;
+  font-family: 'Kaushan Script', cursive;
+  font-size: 1.5rem;
   letter-spacing: 0.01em;
-  color: var(--ink);
+  color: var(--gold);
 }
 .nav-right {
   display: flex;
@@ -139,9 +116,9 @@ async function signOut() {
   font-weight: 500;
   color: var(--ink);
   text-decoration: none;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.1rem;
   border: 1.5px solid var(--border-dark);
-  border-radius: 6px;
+  border-radius: 8px;
   transition: all 0.2s;
 }
 .nav-signin:hover {
@@ -154,27 +131,24 @@ async function signOut() {
   font-weight: 600;
   color: white;
   text-decoration: none;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.1rem;
   background: var(--sage);
-  border-radius: 6px;
+  border-radius: 8px;
   transition: filter 0.2s;
 }
-.nav-dashboard:hover { filter: brightness(0.92); }
+.nav-dashboard:hover { filter: brightness(0.9); }
 .nav-signout {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--ink-muted);
   background: none;
   border: 1.5px solid var(--border);
-  border-radius: 6px;
-  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 }
-.nav-signout:hover {
-  color: var(--terracotta);
-  border-color: var(--terracotta);
-}
+.nav-signout:hover { color: var(--terracotta); border-color: var(--terracotta); }
 
 /* ── HERO ── */
 .hero {
@@ -182,78 +156,130 @@ async function signOut() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5rem 1.5rem 0;
-}
-.hero-inner {
-  max-width: 640px;
+  justify-content: center;
+  min-height: calc(100vh - 57px);
+  padding: 4rem 2rem 6rem;
   text-align: center;
+  position: relative;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 40%, var(--gold-light) 0%, transparent 70%),
+    var(--parchment);
 }
-.hero-eyebrow {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
+.hero-content {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hero-tagline {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
   margin-bottom: 1rem;
+}
+.hero-brand {
+  font-family: 'Kaushan Script', cursive;
+  font-size: clamp(4rem, 12vw, 7rem);
+  color: var(--gold);
+  line-height: 1;
+  margin: 0 0 1rem;
+}
+.hero-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 1.75rem;
+  color: var(--gold-soft);
+}
+.hero-divider::before,
+.hero-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gold-soft);
+}
+.hero-divider span {
+  font-size: 0.75rem;
+  color: var(--gold);
+  flex-shrink: 0;
 }
 .hero-title {
   font-family: 'Lora', serif;
-  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.25;
   color: var(--ink);
-  margin-bottom: 1.25rem;
-}
-.hero-title em {
-  font-style: italic;
-  color: var(--sage);
+  margin-bottom: 1.1rem;
 }
 .hero-desc {
   font-size: 1.05rem;
   color: var(--ink-soft);
-  line-height: 1.65;
-  margin-bottom: 2rem;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
 }
 .hero-actions {
   display: flex;
-  gap: 0.85rem;
+  gap: 0.9rem;
   justify-content: center;
   flex-wrap: wrap;
 }
 .btn-primary {
-  padding: 0.75rem 1.75rem;
+  padding: 0.8rem 2rem;
   background: var(--sage);
   color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.2s;
+  box-shadow: 0 2px 12px rgba(92, 122, 94, 0.35);
+  transition: all 0.2s;
 }
-.btn-primary:hover { background: var(--color-green-600); }
-.btn-secondary {
-  padding: 0.75rem 1.75rem;
+.btn-primary:hover {
+  filter: brightness(0.92);
+  box-shadow: 0 4px 18px rgba(92, 122, 94, 0.45);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  padding: 0.8rem 2rem;
   background: transparent;
   color: var(--ink);
   border: 1.5px solid var(--border-dark);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
   transition: all 0.2s;
 }
-.btn-secondary:hover {
+.btn-ghost:hover {
   background: var(--parchment-dark);
   border-color: var(--ink-muted);
 }
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  color: var(--ink-muted);
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(5px); }
+}
+
+/* ── SCRIPTURE ── */
 .scripture-strip {
-  margin-top: 3.5rem;
   width: 100%;
   background: var(--gold-light);
   border-top: 1px solid var(--gold-soft);
   border-bottom: 1px solid var(--gold-soft);
   text-align: center;
-  padding: 0.85rem 1.5rem;
+  padding: 1rem 2rem;
   font-family: 'Lora', serif;
   font-style: italic;
   font-size: 0.9rem;
@@ -262,33 +288,41 @@ async function signOut() {
 
 /* ── FEATURES ── */
 .features {
-  padding: 3.5rem 1.5rem;
+  padding: 4.5rem 2rem;
   background: var(--parchment-dark);
   border-top: 1px solid var(--border);
+}
+.features-label {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 2.5rem;
 }
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
-  max-width: 860px;
+  max-width: 900px;
   margin: 0 auto;
 }
 .feature-card {
   background: var(--parchment);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 1.75rem 1.5rem;
-  box-shadow: 0 2px 8px var(--shadow);
-  transition: box-shadow 0.2s;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 1px 6px var(--shadow);
+  transition: all 0.25s;
 }
-.feature-card:hover { box-shadow: 0 4px 16px var(--shadow-md); }
-.feature-icon {
-  font-size: 1.75rem;
-  margin-bottom: 0.85rem;
+.feature-card:hover {
+  box-shadow: 0 6px 24px var(--shadow-md);
+  transform: translateY(-2px);
 }
 .feature-card h3 {
   font-family: 'Lora', serif;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--ink);
   margin-bottom: 0.5rem;
@@ -296,44 +330,26 @@ async function signOut() {
 .feature-card p {
   font-size: 0.875rem;
   color: var(--ink-soft);
-  line-height: 1.6;
-}
-
-/* ── MOBILE ── */
-@media (max-width: 600px) {
-  .landing-nav {
-    padding: 0.85rem 1.25rem;
-  }
-  .nav-brand {
-    font-size: 0.875rem;
-  }
-  .hero {
-    padding: 3rem 1.25rem 0;
-  }
-  .hero-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .btn-primary,
-  .btn-secondary {
-    text-align: center;
-  }
-  .scripture-strip {
-    margin-top: 2.5rem;
-    font-size: 0.82rem;
-  }
-  .features {
-    padding: 2.5rem 1.25rem;
-  }
+  line-height: 1.65;
 }
 
 /* ── FOOTER ── */
 .landing-footer {
   text-align: center;
-  padding: 1.25rem 1rem;
+  padding: 1.5rem 1rem;
   font-size: 0.8rem;
   color: var(--ink-muted);
   background: var(--parchment-dark);
   border-top: 1px solid var(--border);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .landing-nav { padding: 0.85rem 1.25rem; }
+  .nav-brand { font-size: 1.2rem; }
+  .hero { padding: 3rem 1.5rem 5rem; min-height: calc(100svh - 52px); }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn-primary, .btn-ghost { text-align: center; }
+  .features { padding: 3rem 1.25rem; }
 }
 </style>

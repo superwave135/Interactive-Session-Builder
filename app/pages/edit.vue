@@ -234,10 +234,9 @@ async function confirmSave() {
   border-bottom: 1px solid var(--border);
 }
 .builder-title {
-  font-family: 'Lora', serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--ink);
+  font-family: 'Kaushan Script', cursive;
+  font-size: 1.3rem;
+  color: var(--gold);
 }
 .btn-back {
   background: none;
@@ -358,7 +357,7 @@ async function confirmSave() {
     padding: 0.5rem 0.75rem;
   }
   .builder-title {
-    font-size: 0.82rem;
+    font-size: 1.05rem;
   }
   .btn-back {
     padding: 0.35rem 0.6rem;
