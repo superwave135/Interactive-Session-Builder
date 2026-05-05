@@ -2,10 +2,7 @@
   <div class="dashboard">
     <!-- Header -->
     <header class="dash-header">
-      <NuxtLink
-        to="/"
-        class="dash-brand"
-      >Gatherly</NuxtLink>
+      <span class="dash-brand">Gatherly</span>
       <div class="dash-user">
         <UColorModeButton />
         <span>{{ user?.email }}</span>
@@ -190,9 +187,6 @@ async function signOut() {
   color: var(--gold);
   text-decoration: none;
   transition: color 0.15s;
-}
-.dash-brand:hover {
-  color: var(--sage);
 }
 .dash-user {
   display: flex;

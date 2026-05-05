@@ -1,7 +1,5 @@
 <template>
   <div class="auth-container">
-    <UColorModeButton class="mode-toggle" />
-
     <div class="auth-card">
       <!-- Logo / Branding -->
       <div class="auth-header">
@@ -158,11 +156,6 @@ async function resetPassword() {
   background: var(--parchment);
   padding: 1rem;
   position: relative;
-}
-.mode-toggle {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
 }
 .auth-card {
   background: var(--surface);

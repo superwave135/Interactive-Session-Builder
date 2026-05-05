@@ -102,6 +102,10 @@ definePageMeta({ layout: false })
 const user = useSupabaseUser()
 const supabase = useSupabaseClient()
 
+watch(user, (val) => {
+  if (val) navigateTo('/dashboard')
+}, { immediate: true })
+
 async function signOut() {
   await supabase.auth.signOut()
 }
