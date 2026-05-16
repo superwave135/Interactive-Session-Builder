@@ -1522,7 +1522,8 @@ function renderBlockInner(block, viewMode = false, viewSuffix = 'view') {
                 style="font-size:12px;font-weight:500;min-width:40px;max-width:120px;
                        color:${i === lyricsActive ? 'var(--sage)' : 'var(--ink-muted)'};
                        outline:none;font-family:'DM Sans',sans-serif;cursor:text;
-                       padding:2px 4px;border-radius:4px;white-space:nowrap;"
+                       padding:2px 4px;border-radius:4px;white-space:nowrap;
+                       overflow:hidden;text-overflow:ellipsis;"
                 onclick="setLyricsTabActive('${block.id}',${i},event)"
                 onmousedown="event.stopPropagation()"
                 ondragstart="event.stopPropagation()"
