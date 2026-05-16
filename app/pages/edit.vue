@@ -32,10 +32,10 @@
         </div>
         <div class="bar-mode-group bar-file-group">
           <button
-            class="bar-mode-btn"
-            @click="triggerUpload"
+            class="bar-mode-btn bar-mode-save"
+            @click="saveSession"
           >
-            Upload
+            Save
           </button>
           <button
             class="bar-mode-btn"
@@ -44,10 +44,10 @@
             Download
           </button>
           <button
-            class="bar-mode-btn bar-mode-save"
-            @click="saveSession"
+            class="bar-mode-btn"
+            @click="triggerUpload"
           >
-            Save
+            Upload
           </button>
         </div>
       </div>
@@ -330,14 +330,14 @@ async function confirmSave() {
   background: transparent;
   transition: all 0.18s;
 }
-.bar-mode-btn.active { background: var(--gold); color: var(--ink); }
-.bar-mode-present { background: var(--sage) !important; color: #fff !important; }
+.bar-mode-btn.active { background: var(--gold); color: #000; }
+.bar-mode-present { background: var(--sage) !important; color: #000 !important; }
 .bar-mode-present:hover { filter: brightness(0.9); }
 .bar-file-group { gap: 0; padding: 2px; }
 .bar-file-group .bar-mode-btn { padding: 3px 8px; border-radius: 0; }
 .bar-file-group .bar-mode-btn:first-child { border-radius: 4px 0 0 4px; }
 .bar-file-group .bar-mode-btn:last-child { border-radius: 0 4px 4px 0; }
-.bar-mode-save { background: var(--sage-mid) !important; color: var(--ink) !important; }
+.bar-mode-save { background: var(--sage) !important; color: #000 !important; padding: 3px 14px !important; }
 .bar-mode-save:hover { filter: brightness(0.9); }
 .btn-save {
   background: none;

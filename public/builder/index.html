@@ -405,6 +405,9 @@
     min-height: 40px; padding: 4px 2px;
   }
   .r-tab-empty { color: var(--ink-muted); font-style: italic; font-size: 12px; }
+  .r-tab-drag-handle { cursor: grab; color: var(--ink-muted); font-size: 11px; opacity: 0.4; padding: 0 1px; user-select: none; flex-shrink: 0; }
+  .r-tab-drag-handle:hover { opacity: 0.9; }
+  .r-tab-edit-wrap.tab-drag-over { border-bottom-color: var(--terracotta) !important; background: rgba(92,122,94,0.06); border-radius: 4px 4px 0 0; }
   .r-tab-expand-btn {
     position: absolute; top: 10px; right: 10px;
     background: var(--parchment-dark); border: 1px solid var(--border);
@@ -447,6 +450,52 @@
     color: var(--ink); white-space: pre-wrap;
     font-family: 'DM Sans', sans-serif;
     max-width: 1000px; margin: 0 auto; width: 100%;
+  }
+
+  /* ── LYRICS / CHORDS COMPONENT ── */
+  .r-lyrics { background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  .r-lyrics-nav { display: flex; border-bottom: 1px solid var(--border); background: var(--parchment-dark); overflow-x: auto; }
+  .r-lyrics-tab-btn {
+    flex-shrink: 0; padding: 10px 14px; font-size: 12px; font-weight: 500;
+    border: none; background: none; cursor: pointer;
+    color: var(--ink-muted); border-bottom: 2px solid transparent;
+    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .r-lyrics-tab-btn.active { color: var(--sage); border-bottom-color: var(--sage); background: var(--parchment); }
+  .r-lyrics-body { padding: 14px; }
+  .r-lyrics-content { display: none; }
+  .r-lyrics-content.active { display: block; }
+  .r-lyrics-split-wrap { display: flex; gap: 0; }
+  .r-lyrics-pane { flex: 1; min-width: 0; padding: 0 14px; }
+  .r-lyrics-pane:first-child { padding-left: 0; }
+  .r-lyrics-pane + .r-lyrics-pane { border-left: 1px solid var(--border); }
+  .r-lyrics-pane-title {
+    font-size: 10px; font-weight: 700; color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.07em;
+    margin-bottom: 8px; padding-bottom: 5px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .r-lyrics-pane-title.r-editable:empty::before { content: attr(placeholder); color: var(--ink-muted); font-style: italic; pointer-events: none; }
+  .r-lyrics-ce {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 12.5px; line-height: 1.65;
+    white-space: pre-wrap;
+    color: var(--ink);
+    outline: none; min-height: 80px;
+    padding: 4px 0; word-break: break-word;
+  }
+  .r-lyrics-ce:empty::before {
+    content: attr(data-placeholder);
+    color: var(--ink-muted); pointer-events: none; font-style: italic;
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+  }
+  .r-lyrics-tab-wrap.lyrics-drag-over { border-bottom-color: var(--terracotta) !important; background: rgba(92,122,94,0.06); border-radius: 4px 4px 0 0; }
+  @media (max-width: 600px) {
+    .r-lyrics-split-wrap { flex-direction: column; }
+    .r-lyrics-pane { padding: 0; }
+    .r-lyrics-pane + .r-lyrics-pane { border-left: none; border-top: 1px solid var(--border); margin-top: 12px; padding-top: 12px; }
   }
 
   /* ── IMAGE COMPONENT ── */
@@ -1062,6 +1111,17 @@
       </div>
 
       <div class="comp-section">
+        <div class="comp-section-label">Worship</div>
+        <div class="comp-tile" draggable="true" data-type="lyrics">
+          <div class="comp-tile-icon icon-content">♪</div>
+          <div class="comp-tile-info">
+            <div class="comp-tile-name">Lyrics / Chords</div>
+            <div class="comp-tile-desc">Song sections with split view</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-section">
         <div class="comp-section-label">Discussion</div>
         <div class="comp-tile" draggable="true" data-type="tabs">
           <div class="comp-tile-icon icon-interact">≡</div>
@@ -1192,6 +1252,10 @@ function defaultProps(type) {
   const tabCount = blocks.filter(b => b.type === 'tabs').length;
   const qCount = blocks.filter(b => b.type === 'question').length;
   const map = {
+    lyrics:   { activeTab: 0, tabs: [
+      { label: 'Verse 1', split: false, leftTitle: 'Verse 1', leftContent: '', rightTitle: '', rightContent: '' },
+      { label: 'Chorus',  split: false, leftTitle: 'Chorus',  leftContent: '', rightTitle: '', rightContent: '' },
+    ]},
     tabs:     { labels: 'Tab 1,Tab 2,Tab 3', activeTab: 0, contents: ['','',''] },
     cellgroup:{ name: '', subtitle: 'Cell Group Session' },
     heading:  { text: '', subtitle: '' },
@@ -1210,6 +1274,7 @@ function defaultProps(type) {
 // ── ICONS / COLORS ──
 const typeInfo = {
   cellgroup:{ icon: 'CG', label: 'Cell Group Name', cls: 'icon-layout' },
+  lyrics:   { icon: '♪',  label: 'Lyrics / Chords',  cls: 'icon-content' },
   tabs:     { icon: '≡',  label: 'Tab Group',       cls: 'icon-layout' },
   heading:  { icon: 'H',  label: 'Heading',          cls: 'icon-layout' },
   divider:  { icon: '─',  label: 'Divider',          cls: 'icon-layout' },
@@ -1408,6 +1473,129 @@ function renderBlockInner(block, viewMode = false, viewSuffix = 'view') {
             >${p.subtitle || ''}</div>
            </div>`;
 
+    case 'lyrics': {
+      const lyricsTabs = p.tabs || [];
+      const lyricsActive = p.activeTab || 0;
+      if (viewMode) {
+        return `<div class="r-lyrics">
+          <div class="r-lyrics-nav">${lyricsTabs.map((tab, i) =>
+            `<button class="r-lyrics-tab-btn ${i === lyricsActive ? 'active' : ''}"
+              onclick="setLyricsTabActive('${block.id}',${i},event)">${tab.label || `Tab ${i+1}`}</button>`
+          ).join('')}</div>
+          <div class="r-lyrics-body">
+            ${lyricsTabs.map((tab, i) => `
+              <div class="r-lyrics-content ${i === lyricsActive ? 'active' : ''}">
+                ${tab.split ? `
+                  <div class="r-lyrics-split-wrap">
+                    <div class="r-lyrics-pane">
+                      ${tab.leftTitle ? `<div class="r-lyrics-pane-title">${tab.leftTitle}</div>` : ''}
+                      <div class="r-lyrics-ce">${tab.leftContent || ''}</div>
+                    </div>
+                    <div class="r-lyrics-pane">
+                      ${tab.rightTitle ? `<div class="r-lyrics-pane-title">${tab.rightTitle}</div>` : ''}
+                      <div class="r-lyrics-ce">${tab.rightContent || ''}</div>
+                    </div>
+                  </div>` : `
+                  <div class="r-lyrics-pane">
+                    ${tab.leftTitle ? `<div class="r-lyrics-pane-title">${tab.leftTitle}</div>` : ''}
+                    <div class="r-lyrics-ce">${tab.leftContent || ''}</div>
+                  </div>`}
+              </div>`).join('')}
+          </div>
+        </div>`;
+      }
+      // Build mode
+      return `<div class="r-lyrics">
+        <div class="r-lyrics-nav-edit" style="display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--parchment-dark);overflow-x:auto;"
+          ondragover="if(_lyricsDragSrcId){event.preventDefault();event.stopPropagation();}"
+          ondrop="if(_lyricsDragSrcId){event.preventDefault();event.stopPropagation();}">
+          ${lyricsTabs.map((tab, i) =>
+            `<div class="r-lyrics-tab-wrap"
+              draggable="true" data-tab-idx="${i}"
+              style="display:flex;align-items:center;border-bottom:2px solid ${i === lyricsActive ? 'var(--sage)' : 'transparent'};padding:4px 6px 2px;gap:3px;flex-shrink:0;"
+              ondragstart="lyricsDragStart('${block.id}',${i},event)"
+              ondragover="lyricsDragOver('${block.id}',${i},event)"
+              ondrop="lyricsDrop('${block.id}',${i},event)"
+              ondragend="lyricsDragEnd(event)">
+              <span class="r-tab-drag-handle" title="Drag to reorder">⠿</span>
+              <div class="r-lyrics-tab-name r-editable" contenteditable="true" spellcheck="false"
+                style="font-size:12px;font-weight:500;min-width:40px;max-width:120px;
+                       color:${i === lyricsActive ? 'var(--sage)' : 'var(--ink-muted)'};
+                       outline:none;font-family:'DM Sans',sans-serif;cursor:text;
+                       padding:2px 4px;border-radius:4px;white-space:nowrap;"
+                onclick="setLyricsTabActive('${block.id}',${i},event)"
+                onmousedown="event.stopPropagation()"
+                ondragstart="event.stopPropagation()"
+                oninput="renameLyricsTab('${block.id}',${i},this.innerText)"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+              >${tab.label || `Tab ${i+1}`}</div>
+              <button style="background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;
+                             font-size:11px;color:var(--ink-muted);padding:1px 4px;line-height:1.4;flex-shrink:0;"
+                onclick="toggleLyricsSplit('${block.id}',${i},event)"
+                ondragstart="event.stopPropagation()"
+                title="${tab.split ? 'Unsplit' : 'Split'}">${tab.split ? '⊟' : '⊞'}</button>
+              <button style="background:none;border:none;cursor:pointer;font-size:13px;
+                             color:var(--ink-muted);padding:0 2px;line-height:1;
+                             opacity:${lyricsTabs.length <= 1 ? '0.2' : '0.6'};"
+                onclick="removeLyricsTab('${block.id}',${i},event)"
+                ondragstart="event.stopPropagation()"
+                ${lyricsTabs.length <= 1 ? 'disabled' : ''}
+                title="Remove tab">×</button>
+            </div>`).join('')}
+          <button style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--sage);
+                         padding:4px 10px;flex-shrink:0;line-height:1;opacity:0.7;"
+            onclick="addLyricsTab('${block.id}',event)" title="Add tab">＋</button>
+        </div>
+        <div class="r-lyrics-body">
+          ${lyricsTabs.map((tab, i) => `
+            <div class="r-lyrics-content ${i === lyricsActive ? 'active' : ''}">
+              ${tab.split ? `
+                <div class="r-lyrics-split-wrap">
+                  <div class="r-lyrics-pane">
+                    <div class="r-lyrics-pane-title r-editable" contenteditable="true" spellcheck="false"
+                      placeholder="Section title..."
+                      onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                      oninput="updateLyricsPaneTitle('${block.id}',${i},'left',this.innerText)"
+                      onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+                    >${tab.leftTitle || ''}</div>
+                    <div class="r-lyrics-ce" contenteditable="true"
+                      data-placeholder="Chords and lyrics..."
+                      oninput="updateLyricsContent('${block.id}',${i},'left',this.innerHTML)"
+                      onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                    >${tab.leftContent || ''}</div>
+                  </div>
+                  <div class="r-lyrics-pane">
+                    <div class="r-lyrics-pane-title r-editable" contenteditable="true" spellcheck="false"
+                      placeholder="Section title..."
+                      onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                      oninput="updateLyricsPaneTitle('${block.id}',${i},'right',this.innerText)"
+                      onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+                    >${tab.rightTitle || ''}</div>
+                    <div class="r-lyrics-ce" contenteditable="true"
+                      data-placeholder="Chords and lyrics..."
+                      oninput="updateLyricsContent('${block.id}',${i},'right',this.innerHTML)"
+                      onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                    >${tab.rightContent || ''}</div>
+                  </div>
+                </div>` : `
+                <div class="r-lyrics-pane">
+                  <div class="r-lyrics-pane-title r-editable" contenteditable="true" spellcheck="false"
+                    placeholder="Section title..."
+                    onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                    oninput="updateLyricsPaneTitle('${block.id}',${i},'left',this.innerText)"
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+                  >${tab.leftTitle || ''}</div>
+                  <div class="r-lyrics-ce" contenteditable="true"
+                    data-placeholder="Chords and lyrics..."
+                    oninput="updateLyricsContent('${block.id}',${i},'left',this.innerHTML)"
+                    onclick="event.stopPropagation()" onmousedown="event.stopPropagation()"
+                  >${tab.leftContent || ''}</div>
+                </div>`}
+            </div>`).join('')}
+        </div>
+      </div>`;
+    }
+
     case 'tabs': {
       const tabs = splitTabs(p.labels);
       const active = p.activeTab || 0;
@@ -1430,10 +1618,19 @@ function renderBlockInner(block, viewMode = false, viewSuffix = 'view') {
       }
       // Build mode: contenteditable tab names + add/remove tabs
       return `<div class="r-tabs">
-        <div class="r-tabs-nav-edit" style="display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--parchment-dark);overflow-x:auto;">
+        <div class="r-tabs-nav-edit" style="display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--parchment-dark);overflow-x:auto;"
+          ondragover="if(_tabDragSrcId){event.preventDefault();event.stopPropagation();}"
+          ondrop="if(_tabDragSrcId){event.preventDefault();event.stopPropagation();}">
           ${tabs.map((t, i) =>
             `<div class="r-tab-edit-wrap"
-              style="display:flex;align-items:center;border-bottom:2px solid ${i === active ? 'var(--sage)' : 'transparent'};padding:4px 6px 2px;gap:3px;flex-shrink:0;">
+              draggable="true"
+              data-tab-idx="${i}"
+              style="display:flex;align-items:center;border-bottom:2px solid ${i === active ? 'var(--sage)' : 'transparent'};padding:4px 6px 2px;gap:3px;flex-shrink:0;"
+              ondragstart="tabDragStart('${block.id}',${i},event)"
+              ondragover="tabDragOver('${block.id}',${i},event)"
+              ondrop="tabDrop('${block.id}',${i},event)"
+              ondragend="tabDragEnd(event)">
+              <span class="r-tab-drag-handle" title="Drag to reorder">⠿</span>
               <div class="r-tab-name-ce r-editable" contenteditable="true" spellcheck="false"
                 data-tab-ce="${i}"
                 style="font-size:12px;font-weight:500;min-width:40px;max-width:160px;
@@ -1442,6 +1639,7 @@ function renderBlockInner(block, viewMode = false, viewSuffix = 'view') {
                        padding:2px 4px;border-radius:4px;white-space:nowrap;"
                 onclick="setTabActive('${block.id}',${i},event)"
                 onmousedown="event.stopPropagation()"
+                ondragstart="event.stopPropagation()"
                 oninput="renameTab('${block.id}',${i},this.innerText)"
                 onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
               >${t}</div>
@@ -1449,6 +1647,7 @@ function renderBlockInner(block, viewMode = false, viewSuffix = 'view') {
                              color:var(--ink-muted);padding:0 2px;line-height:1;
                              opacity:${tabs.length <= 1 ? '0.2' : '0.6'};"
                 onclick="removeTab('${block.id}',${i},event)"
+                ondragstart="event.stopPropagation()"
                 ${tabs.length <= 1 ? 'disabled' : ''}
                 title="Remove tab">×</button>
             </div>`).join('')}
@@ -1846,6 +2045,198 @@ function removeTab(id, idx, e) {
   block.props.contents = contents;
   if (block.props.activeTab >= tabs.length) block.props.activeTab = tabs.length - 1;
   renderCanvas();
+}
+
+let _tabDragSrcId = null;
+let _tabDragSrcIdx = null;
+
+function tabDragStart(id, idx, e) {
+  e.stopPropagation();
+  _tabDragSrcId = id;
+  _tabDragSrcIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', idx);
+  setTimeout(() => e.target.closest('.r-tab-edit-wrap').style.opacity = '0.4', 0);
+}
+
+function tabDragOver(id, idx, e) {
+  if (_tabDragSrcId !== id) return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.dataTransfer.dropEffect = 'move';
+  // Highlight the target tab
+  document.querySelectorAll('.r-tab-edit-wrap').forEach(w => w.classList.remove('tab-drag-over'));
+  if (idx !== _tabDragSrcIdx) e.target.closest('.r-tab-edit-wrap').classList.add('tab-drag-over');
+}
+
+function tabDrop(id, toIdx, e) {
+  e.preventDefault();
+  e.stopPropagation();
+  document.querySelectorAll('.r-tab-edit-wrap').forEach(w => w.classList.remove('tab-drag-over'));
+  if (_tabDragSrcId !== id || _tabDragSrcIdx === null || _tabDragSrcIdx === toIdx) return;
+  const fromIdx = _tabDragSrcIdx;
+  _tabDragSrcId = null;
+  _tabDragSrcIdx = null;
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tabs = splitTabs(block.props.labels);
+  const contents = block.props.contents || tabs.map(() => '');
+  // Move tab from fromIdx to toIdx
+  const [movedLabel] = tabs.splice(fromIdx, 1);
+  tabs.splice(toIdx, 0, movedLabel);
+  const [movedContent] = contents.splice(fromIdx, 1);
+  contents.splice(toIdx, 0, movedContent);
+  block.props.labels = tabs.join(',');
+  block.props.contents = contents;
+  // Keep active tab tracking the same tab that was active
+  const active = block.props.activeTab || 0;
+  if (active === fromIdx) {
+    block.props.activeTab = toIdx;
+  } else if (fromIdx < active && toIdx >= active) {
+    block.props.activeTab = active - 1;
+  } else if (fromIdx > active && toIdx <= active) {
+    block.props.activeTab = active + 1;
+  }
+  renderCanvas();
+}
+
+function tabDragEnd(e) {
+  e.stopPropagation();
+  document.querySelectorAll('.r-tab-edit-wrap').forEach(w => {
+    w.style.opacity = '';
+    w.classList.remove('tab-drag-over');
+  });
+  _tabDragSrcId = null;
+  _tabDragSrcIdx = null;
+}
+
+// ── LYRICS / CHORDS ──
+
+function setLyricsTabActive(id, idx, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block || block.props.activeTab === idx) return;
+  block.props.activeTab = idx;
+  document.querySelectorAll('.r-lyrics').forEach(el => {
+    const firstBtn = el.querySelector('.r-lyrics-tab-name, .r-lyrics-tab-btn');
+    if (!firstBtn) return;
+    const onc = firstBtn.getAttribute('onclick') || '';
+    if (!onc.includes(`'${id}'`) && !onc.includes(`"${id}"`)) return;
+    el.querySelectorAll('.r-lyrics-tab-btn').forEach((btn, i) => btn.classList.toggle('active', i === idx));
+    el.querySelectorAll('.r-lyrics-tab-wrap').forEach((wrap, i) => {
+      wrap.style.borderBottomColor = i === idx ? 'var(--sage)' : 'transparent';
+      const ce = wrap.querySelector('.r-lyrics-tab-name');
+      if (ce) ce.style.color = i === idx ? 'var(--sage)' : 'var(--ink-muted)';
+    });
+    el.querySelectorAll('.r-lyrics-content').forEach((panel, i) => panel.classList.toggle('active', i === idx));
+  });
+}
+
+function addLyricsTab(id, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tabs = block.props.tabs || [];
+  const n = tabs.length + 1;
+  tabs.push({ label: `Tab ${n}`, split: false, leftTitle: '', leftContent: '', rightTitle: '', rightContent: '' });
+  block.props.tabs = tabs;
+  block.props.activeTab = tabs.length - 1;
+  renderCanvas();
+}
+
+function removeLyricsTab(id, idx, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tabs = block.props.tabs || [];
+  if (tabs.length <= 1) return;
+  tabs.splice(idx, 1);
+  block.props.tabs = tabs;
+  if (block.props.activeTab >= tabs.length) block.props.activeTab = tabs.length - 1;
+  renderCanvas();
+}
+
+function renameLyricsTab(id, idx, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  block.props.tabs[idx].label = (value || '').replace(/\n/g, '').trim() || 'Tab';
+}
+
+function toggleLyricsSplit(id, idx, e) {
+  e.stopPropagation();
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tab = block.props.tabs[idx];
+  tab.split = !tab.split;
+  renderCanvas();
+}
+
+function updateLyricsContent(id, idx, side, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  if (side === 'left') block.props.tabs[idx].leftContent = value;
+  else block.props.tabs[idx].rightContent = value;
+}
+
+function updateLyricsPaneTitle(id, idx, side, value) {
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const clean = (value || '').replace(/\n/g, '').trim();
+  if (side === 'left') block.props.tabs[idx].leftTitle = clean;
+  else block.props.tabs[idx].rightTitle = clean;
+}
+
+// Drag-to-reorder for lyrics tabs
+let _lyricsDragSrcId = null;
+let _lyricsDragSrcIdx = null;
+
+function lyricsDragStart(id, idx, e) {
+  e.stopPropagation();
+  _lyricsDragSrcId = id;
+  _lyricsDragSrcIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', idx);
+  setTimeout(() => e.target.closest('.r-lyrics-tab-wrap').style.opacity = '0.4', 0);
+}
+
+function lyricsDragOver(id, idx, e) {
+  if (_lyricsDragSrcId !== id) return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.r-lyrics-tab-wrap').forEach(w => w.classList.remove('lyrics-drag-over'));
+  if (idx !== _lyricsDragSrcIdx) e.target.closest('.r-lyrics-tab-wrap').classList.add('lyrics-drag-over');
+}
+
+function lyricsDrop(id, toIdx, e) {
+  e.preventDefault();
+  e.stopPropagation();
+  document.querySelectorAll('.r-lyrics-tab-wrap').forEach(w => w.classList.remove('lyrics-drag-over'));
+  if (_lyricsDragSrcId !== id || _lyricsDragSrcIdx === null || _lyricsDragSrcIdx === toIdx) return;
+  const fromIdx = _lyricsDragSrcIdx;
+  _lyricsDragSrcId = null;
+  _lyricsDragSrcIdx = null;
+  const block = blocks.find(b => b.id === id);
+  if (!block) return;
+  const tabs = block.props.tabs;
+  const [moved] = tabs.splice(fromIdx, 1);
+  tabs.splice(toIdx, 0, moved);
+  block.props.tabs = tabs;
+  const active = block.props.activeTab || 0;
+  if (active === fromIdx) block.props.activeTab = toIdx;
+  else if (fromIdx < active && toIdx >= active) block.props.activeTab = active - 1;
+  else if (fromIdx > active && toIdx <= active) block.props.activeTab = active + 1;
+  renderCanvas();
+}
+
+function lyricsDragEnd(e) {
+  e.stopPropagation();
+  document.querySelectorAll('.r-lyrics-tab-wrap').forEach(w => {
+    w.style.opacity = '';
+    w.classList.remove('lyrics-drag-over');
+  });
+  _lyricsDragSrcId = null;
+  _lyricsDragSrcIdx = null;
 }
 
 function saveAnswer(id, value) {
