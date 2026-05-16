@@ -32,13 +32,16 @@
         </div>
         <div class="autosave-group">
           <button
+            title="Toggle auto-save (every 30s)"
             :class="['autosave-toggle', { active: autoSaveEnabled }]"
             @click="toggleAutoSave"
-            title="Toggle auto-save (every 30s)"
           >
             Auto-save
           </button>
-          <span v-if="autoSaveText" class="autosave-status">{{ autoSaveText }}</span>
+          <span
+            v-if="autoSaveText"
+            class="autosave-status"
+          >{{ autoSaveText }}</span>
         </div>
         <div class="bar-mode-group bar-file-group">
           <button
@@ -213,7 +216,11 @@ async function silentSave() {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) return
   let currentBlocks = []
-  try { currentBlocks = builderFrame.value?.contentWindow?.blocks || [] } catch (_e) { return }
+  try {
+    currentBlocks = builderFrame.value?.contentWindow?.blocks || []
+  } catch {
+    return
+  }
   if (currentBlocks.length === 0) return
   const nameBlock = currentBlocks.find(b => b.type === 'cellgroup')
   const title = nameBlock?.props?.name?.trim() || 'Untitled Session'
@@ -228,7 +235,9 @@ async function silentSave() {
     autoSaveText.value = `✓ ${t}`
   } else {
     autoSaveText.value = '⚠ Save failed'
-    setTimeout(() => { autoSaveText.value = '' }, 4000)
+    setTimeout(() => {
+      autoSaveText.value = ''
+    }, 4000)
   }
 }
 
@@ -238,7 +247,10 @@ function startAutoSave() {
 }
 
 function stopAutoSave() {
-  if (autoSaveTimer) { clearInterval(autoSaveTimer); autoSaveTimer = null }
+  if (autoSaveTimer) {
+    clearInterval(autoSaveTimer)
+    autoSaveTimer = null
+  }
 }
 
 function toggleAutoSave() {
