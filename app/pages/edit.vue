@@ -30,6 +30,16 @@
             Present
           </button>
         </div>
+        <div class="autosave-group">
+          <button
+            :class="['autosave-toggle', { active: autoSaveEnabled }]"
+            @click="toggleAutoSave"
+            title="Toggle auto-save (every 30s)"
+          >
+            Auto-save
+          </button>
+          <span v-if="autoSaveText" class="autosave-status">{{ autoSaveText }}</span>
+        </div>
         <div class="bar-mode-group bar-file-group">
           <button
             class="bar-mode-btn bar-mode-save"
@@ -180,6 +190,7 @@ async function onFrameLoad() {
   if (!win) return
   win.blocks = rawBlocks
   win.renderCanvas()
+  if (autoSaveEnabled.value) startAutoSave()
 }
 
 // Re-apply theme whenever color mode changes after the iframe is already loaded
@@ -190,8 +201,65 @@ watch(() => colorMode.value, () => {
 function onIframeMessage(e) {
   if (e.data === 'save-session') saveSession()
 }
-onMounted(() => window.addEventListener('message', onIframeMessage))
-onUnmounted(() => window.removeEventListener('message', onIframeMessage))
+
+// ── AUTO-SAVE ──
+const autoSaveEnabled = ref(true)
+const autoSaveText = ref('')
+let autoSaveTimer = null
+
+async function silentSave() {
+  const sessionId = route.query.session
+  if (!sessionId) return
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return
+  let currentBlocks = []
+  try { currentBlocks = builderFrame.value?.contentWindow?.blocks || [] } catch (_e) { return }
+  if (currentBlocks.length === 0) return
+  const nameBlock = currentBlocks.find(b => b.type === 'cellgroup')
+  const title = nameBlock?.props?.name?.trim() || 'Untitled Session'
+  autoSaveText.value = 'Saving…'
+  const { error } = await supabase
+    .from('sessions')
+    .update({ title, blocks: currentBlocks, updated_at: new Date().toISOString() })
+    .eq('id', sessionId)
+    .eq('user_id', session.user.id)
+  if (!error) {
+    const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    autoSaveText.value = `✓ ${t}`
+  } else {
+    autoSaveText.value = '⚠ Save failed'
+    setTimeout(() => { autoSaveText.value = '' }, 4000)
+  }
+}
+
+function startAutoSave() {
+  stopAutoSave()
+  autoSaveTimer = setInterval(silentSave, 30000)
+}
+
+function stopAutoSave() {
+  if (autoSaveTimer) { clearInterval(autoSaveTimer); autoSaveTimer = null }
+}
+
+function toggleAutoSave() {
+  autoSaveEnabled.value = !autoSaveEnabled.value
+  if (autoSaveEnabled.value) {
+    // Only start if the iframe has already loaded real blocks
+    const win = builderFrame.value?.contentWindow
+    if (win?.blocks?.length > 0) startAutoSave()
+  } else {
+    stopAutoSave()
+    autoSaveText.value = ''
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('message', onIframeMessage)
+})
+onUnmounted(() => {
+  window.removeEventListener('message', onIframeMessage)
+  stopAutoSave()
+})
 
 const currentMode = ref('build')
 
@@ -267,6 +335,8 @@ async function confirmSave() {
       return
     }
     navigateTo(`/edit?session=${data.id}`, { replace: true })
+    // iframe doesn't reload on client-side navigation, so start auto-save manually
+    if (autoSaveEnabled.value) startAutoSave()
   }
 
   showSaveModal.value = false
@@ -333,6 +403,34 @@ async function confirmSave() {
 .bar-mode-btn.active { background: var(--gold); color: #000; }
 .bar-mode-present { background: var(--sage) !important; color: #000 !important; }
 .bar-mode-present:hover { filter: brightness(0.9); }
+.autosave-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.autosave-status {
+  font-size: 10px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.autosave-toggle {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--ink-muted);
+  background: transparent;
+  transition: all 0.18s;
+  font-family: inherit;
+}
+.autosave-toggle.active {
+  background: var(--sage-mid);
+  border-color: var(--sage-mid);
+  color: var(--sage);
+}
+.autosave-toggle:hover { border-color: var(--ink-muted); }
 .bar-file-group { gap: 0; padding: 2px; }
 .bar-file-group .bar-mode-btn { padding: 3px 8px; border-radius: 0; }
 .bar-file-group .bar-mode-btn:first-child { border-radius: 4px 0 0 4px; }
